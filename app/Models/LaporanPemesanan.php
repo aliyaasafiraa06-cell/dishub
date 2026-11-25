@@ -34,10 +34,8 @@ class LaporanPemesanan extends Model
     ];
 
     public const STATUS_OPTIONS = [
-        'Menunggu',
-        'Diproses',
-        'Disetujui',
-        'Ditolak',
+        'Ritel',
+        'Sewa',
     ];
 
     // Data Rute untuk Setiap Layanan

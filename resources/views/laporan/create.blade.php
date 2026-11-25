@@ -109,6 +109,7 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold small">Status <span class="text-danger">*</span></label>
                                 <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                                    <option value="">-- Pilih Status --</option>
                                     @foreach (\App\Models\LaporanPemesanan::STATUS_OPTIONS as $status)
                                         <option value="{{ $status }}" {{ old('status') == $status ? 'selected' : '' }}>{{ $status }}</option>
                                     @endforeach
