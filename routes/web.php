@@ -47,8 +47,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/laporan/{laporan}', [LaporanController::class, 'update'])->name('laporan.update');
         Route::delete('/laporan/{laporan}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
 
-        // Ekspor PDF (hanya admin)
-        Route::get('/layanan/{slug}/export-pdf', [LaporanController::class, 'exportPdf'])->name('laporan.export.pdf');
+        // Ekspor Excel (hanya admin)
+        Route::get('/layanan/{slug}/export-excel', [LaporanController::class, 'exportExcel'])->name('laporan.export.excel');
     });
 
     // Detail Laporan (semua user bisa lihat)

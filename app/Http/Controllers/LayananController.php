@@ -31,7 +31,7 @@ class LayananController extends Controller
         $query = $laporanService->queryForLayanan($layanan->id, $filters);
         $laporan = $laporanService->paginate($query);
 
-        // Ambil ringkasan status (Total, Menunggu, Diproses, dll)
+        // Ambil ringkasan status (Total, Ritel, Sewa)
         $statusCounts = $laporanService->getStatusCounts($layanan->id, $year);
 
         // Range tahun tetap (2023 s/d tahun depan)

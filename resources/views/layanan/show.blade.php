@@ -28,10 +28,10 @@
                     <i class="bi bi-plus-lg"></i> Tambah Laporan
                 </a>
 
-                <a href="{{ route('laporan.export.pdf', $layanan->slug) }}"
-                   class="btn btn-outline-danger d-flex align-items-center gap-2"
-                   style="border-radius: 10px;">
-                    <i class="bi bi-file-earmark-pdf"></i> Ekspor PDF
+                <a href="{{ route('laporan.export.excel', [$layanan->slug, 'search' => request('search'), 'status' => request('status'), 'year' => $year]) }}"
+                    class="btn btn-outline-success d-flex align-items-center gap-2"
+                    style="border-radius: 10px;">
+                        <i class="bi bi-file-earmark-excel"></i> Ekspor Excel
                 </a>
             </div>
         @else

@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use Barryvdh\DomPDF\Facade\Pdf;
+
+use App\Exports\LaporanExport;
 use App\Http\Requests\StoreLaporanRequest;
 use App\Models\LaporanPemesanan;
 use App\Models\Layanan;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanController extends Controller
 {
@@ -65,18 +66,20 @@ class LaporanController extends Controller
             ->route('layanan.show', $slug)
             ->with('success', 'Laporan berhasil dihapus.');
     }
-    public function exportPdf(string $slug)
+
+    // Ekspor Excel per layanan (mengikuti filter yang aktif)
+    public function exportExcel(Request $request, string $slug)
     {
-    $layanan = \App\Models\Layanan::bySlug($slug)->firstOrFail();
+        $layanan = Layanan::bySlug($slug)->firstOrFail();
 
-    $laporan = \App\Models\LaporanPemesanan::with(['layanan', 'user'])
-        ->where('layanan_id', $layanan->id)
-        ->latest('tanggal_pemesanan')
-        ->get();
+        $filters = [
+            'search' => $request->get('search'),
+            'status' => $request->get('status'),
+            'year'   => $request->get('year'),
+        ];
 
-    $pdf = Pdf::loadView('laporan.pdf', compact('layanan', 'laporan'));
-    $pdf->setPaper('A4', 'landscape');
+        $namaFile = 'Laporan-' . $layanan->slug . '-' . now()->format('Ymd-His') . '.xlsx';
 
-    return $pdf->download('Laporan-' . $layanan->nama_layanan . '.pdf');
+        return Excel::download(new LaporanExport($layanan, $filters), $namaFile);
     }
 }
