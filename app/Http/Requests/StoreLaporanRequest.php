@@ -10,7 +10,23 @@ class StoreLaporanRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return true; // akses admin sudah dijaga middleware isAdmin di route
+    }
+
+    /**
+     * Normalisasi SEBELUM validasi: "08.30" -> "08:30", "8:30" -> "08:30".
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('jam_berangkat')) {
+            $jam = str_replace('.', ':', trim((string) $this->input('jam_berangkat')));
+
+            if (preg_match('/^(\d{1,2}):(\d{2})$/', $jam, $m)) {
+                $jam = sprintf('%02d:%02d', (int) $m[1], (int) $m[2]);
+            }
+
+            $this->merge(['jam_berangkat' => $jam]);
+        }
     }
 
     public function rules(): array
@@ -37,26 +53,8 @@ class StoreLaporanRequest extends FormRequest
         return [
             'tanggal_pelaksanaan.after_or_equal' => 'Tanggal pelaksanaan tidak boleh lebih awal dari tanggal pemesanan.',
             'jumlah_pemesanan.min' => 'Jumlah pemesanan minimal 1.',
-            'jam_berangkat' => ['nullable', 'string', 'max:20'],
+            'jam_berangkat.date_format' => 'Format jam tidak valid. Gunakan format HH:MM (contoh: 08:30).',
+            'status.in' => 'Status harus salah satu dari: ' . implode(', ', LaporanPemesanan::STATUS_OPTIONS) . '.',
         ];
     }
-
-    public function withValidator($validator)
-{
-    $validator->after(function ($validator) {
-        $jam = $this->input('jam_berangkat');
-        if ($jam) {
-            // Normalisasi: ganti titik dengan titik dua
-            $jam = str_replace('.', ':', $jam);
-
-            // Validasi format HH:MM
-            if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $jam)) {
-                $validator->errors()->add('jam_berangkat', 'Format jam tidak valid. Gunakan format HH:MM (contoh: 08:30 atau 11:30).');
-            }
-
-            // Simpan format yang sudah dinormalisasi
-            $this->merge(['jam_berangkat_normalized' => $jam]);
-        }
-    });
-}
 }
