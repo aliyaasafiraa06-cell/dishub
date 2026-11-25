@@ -1,6 +1,6 @@
-﻿==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Http\Controllers\Auth\LoginController.php
-==========================
+﻿==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Http\Controllers\Auth\LoginController.php
+==================================================
 <?php
 
 namespace App\Http\Controllers\Auth;
@@ -48,9 +48,9 @@ class LoginController extends Controller
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Http\Controllers\Controller.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Http\Controllers\Controller.php
+==================================================
 <?php
 
 namespace App\Http\Controllers;
@@ -63,9 +63,9 @@ abstract class Controller
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Http\Controllers\DashboardController.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Http\Controllers\DashboardController.php
+==================================================
 <?php
 
 namespace App\Http\Controllers;
@@ -110,9 +110,9 @@ class DashboardController extends Controller
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Http\Controllers\LaporanController.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Http\Controllers\LaporanController.php
+==================================================
 <?php
 
 namespace App\Http\Controllers;
@@ -199,9 +199,9 @@ class LaporanController extends Controller
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Http\Controllers\LayananController.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Http\Controllers\LayananController.php
+==================================================
 <?php
 
 namespace App\Http\Controllers;
@@ -262,9 +262,9 @@ class LayananController extends Controller
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Http\Middleware\IsAdmin.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Http\Middleware\IsAdmin.php
+==================================================
 <?php
 
 namespace App\Http\Middleware;
@@ -289,9 +289,9 @@ class IsAdmin
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Http\Requests\StoreLaporanRequest.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Http\Requests\StoreLaporanRequest.php
+==================================================
 <?php
 
 namespace App\Http\Requests;
@@ -331,17 +331,36 @@ class StoreLaporanRequest extends FormRequest
         return [
             'tanggal_pelaksanaan.after_or_equal' => 'Tanggal pelaksanaan tidak boleh lebih awal dari tanggal pemesanan.',
             'jumlah_pemesanan.min' => 'Jumlah pemesanan minimal 1.',
-            'jam_berangkat.date_format' => 'Format jam harus HH:MM (contoh: 08:30).',
+            'jam_berangkat' => ['nullable', 'string', 'max:20'],
         ];
     }
+
+    public function withValidator($validator)
+{
+    $validator->after(function ($validator) {
+        $jam = $this->input('jam_berangkat');
+        if ($jam) {
+            // Normalisasi: ganti titik dengan titik dua
+            $jam = str_replace('.', ':', $jam);
+
+            // Validasi format HH:MM
+            if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $jam)) {
+                $validator->errors()->add('jam_berangkat', 'Format jam tidak valid. Gunakan format HH:MM (contoh: 08:30 atau 11:30).');
+            }
+
+            // Simpan format yang sudah dinormalisasi
+            $this->merge(['jam_berangkat_normalized' => $jam]);
+        }
+    });
+}
 }
 
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Models\LaporanPemesanan.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Models\LaporanPemesanan.php
+==================================================
 <?php
 
 namespace App\Models;
@@ -378,10 +397,8 @@ class LaporanPemesanan extends Model
     ];
 
     public const STATUS_OPTIONS = [
-        'Menunggu',
-        'Diproses',
-        'Disetujui',
-        'Ditolak',
+        'Ritel',
+        'Sewa',
     ];
 
     // Data Rute untuk Setiap Layanan
@@ -431,10 +448,9 @@ class LaporanPemesanan extends Model
 
 
 
-
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Models\Layanan.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Models\Layanan.php
+==================================================
 <?php
 
 namespace App\Models;
@@ -467,9 +483,9 @@ class Layanan extends Model
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Models\User.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Models\User.php
+==================================================
 <?php
 
 namespace App\Models;
@@ -516,9 +532,9 @@ class User extends Authenticatable
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Providers\AppServiceProvider.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Providers\AppServiceProvider.php
+==================================================
 <?php
 
 namespace App\Providers;
@@ -547,9 +563,9 @@ class AppServiceProvider extends ServiceProvider
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Services\dashboard\DashboardChartService.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Services\dashboard\DashboardChartService.php
+==================================================
 <?php
 
 namespace App\Services\Dashboard;
@@ -624,9 +640,9 @@ class DashboardChartService
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\app\Services\Laporan\LaporanService.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\app\Services\Laporan\LaporanService.php
+==================================================
 <?php
 
 namespace App\Services\Laporan;
@@ -704,9 +720,9 @@ class LaporanService
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\bootstrap\cache\packages.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\bootstrap\cache\packages.php
+==================================================
 <?php return array (
   'barryvdh/laravel-dompdf' => 
   array (
@@ -766,9 +782,9 @@ FILE: D:\laragon\www\dishub-surakarta\bootstrap\cache\packages.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\bootstrap\cache\services.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\bootstrap\cache\services.php
+==================================================
 <?php return array (
   'providers' => 
   array (
@@ -1042,9 +1058,9 @@ FILE: D:\laragon\www\dishub-surakarta\bootstrap\cache\services.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\bootstrap\app.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\bootstrap\app.php
+==================================================
 <?php
 
 use Illuminate\Foundation\Application;
@@ -1073,9 +1089,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\bootstrap\providers.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\bootstrap\providers.php
+==================================================
 <?php
 
 use App\Providers\AppServiceProvider;
@@ -1087,9 +1103,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\app.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\app.php
+==================================================
 <?php
 
 return [
@@ -1220,9 +1236,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\auth.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\auth.php
+==================================================
 <?php
 
 use App\Models\User;
@@ -1344,9 +1360,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\cache.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\cache.php
+==================================================
 <?php
 
 use Illuminate\Support\Str;
@@ -1487,9 +1503,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\database.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\database.php
+==================================================
 <?php
 
 use Illuminate\Support\Str;
@@ -1678,9 +1694,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\filesystems.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\filesystems.php
+==================================================
 <?php
 
 return [
@@ -1765,9 +1781,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\logging.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\logging.php
+==================================================
 <?php
 
 use Monolog\Handler\NullHandler;
@@ -1912,9 +1928,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\mail.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\mail.php
+==================================================
 <?php
 
 return [
@@ -2037,9 +2053,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\queue.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\queue.php
+==================================================
 <?php
 
 return [
@@ -2173,9 +2189,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\services.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\services.php
+==================================================
 <?php
 
 return [
@@ -2218,9 +2234,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\config\session.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\config\session.php
+==================================================
 <?php
 
 use Illuminate\Support\Str;
@@ -2458,9 +2474,9 @@ return [
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\factories\UserFactory.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\factories\UserFactory.php
+==================================================
 <?php
 
 namespace Database\Factories;
@@ -2510,9 +2526,9 @@ class UserFactory extends Factory
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\migrations\0001_01_01_000000_create_users_table.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\migrations\0001_01_01_000000_create_users_table.php
+==================================================
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -2568,9 +2584,9 @@ return new class extends Migration
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\migrations\0001_01_01_000001_create_cache_table.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\migrations\0001_01_01_000001_create_cache_table.php
+==================================================
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -2610,9 +2626,9 @@ return new class extends Migration
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\migrations\0001_01_01_000002_create_jobs_table.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\migrations\0001_01_01_000002_create_jobs_table.php
+==================================================
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -2676,9 +2692,9 @@ return new class extends Migration
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\migrations\2026_11_09_075725_create_layanans_table.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\migrations\2026_11_09_075725_create_layanans_table.php
+==================================================
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -2708,9 +2724,9 @@ return new class extends Migration
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\migrations\2026_11_09_075738_create_laporan_pemesanans_table.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\migrations\2026_11_09_075738_create_laporan_pemesanans_table.php
+==================================================
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -2752,9 +2768,9 @@ return new class extends Migration
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\migrations\2026_11_10_104318_add_rute_fields_to_laporan_pemesanans_table.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\migrations\2026_11_10_104318_add_rute_fields_to_laporan_pemesanans_table.php
+==================================================
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -2783,9 +2799,9 @@ return new class extends Migration
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\seeders\DatabaseSeeder.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\seeders\DatabaseSeeder.php
+==================================================
 <?php
 
 namespace Database\Seeders;
@@ -2807,9 +2823,216 @@ class DatabaseSeeder extends Seeder
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\seeders\LayananSeeder.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\seeders\DummyLaporanSeeder.php
+==================================================
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\Layanan;
+use App\Models\User;
+use App\Models\LaporanPemesanan;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class DummyLaporanSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $admin = User::where('role', 'admin')->firstOrFail();
+
+        $layanans = Layanan::all()->keyBy('slug');
+
+        $namaPemesan = [
+            'Andi Pratama',
+            'Siti Rahmawati',
+            'Budi Santoso',
+            'Rina Oktaviani',
+            'Dimas Saputra',
+            'Agus Setiawan',
+            'Maya Puspitasari',
+            'Rudi Hermawan',
+            'Nanda Putri',
+            'Fajar Nugroho',
+            'Dewi Anggraini',
+            'Rizky Firmansyah',
+            'Lina Marlina',
+            'Wahyu Hidayat',
+            'Intan Permata',
+            'Eko Prasetyo',
+            'Nadia Safitri',
+            'Arif Wibowo',
+            'Putri Amelia',
+            'Yoga Pratama',
+        ];
+
+        $instansi = [
+            'Dinas Pendidikan',
+            'SMP Negeri 4 Surakarta',
+            'Kecamatan Banjarsari',
+            'Universitas Sebelas Maret',
+            'Dinas Pariwisata',
+            'SMK Negeri 2 Surakarta',
+            'SD Negeri Manahan',
+            'Dinas Kebudayaan',
+            'Komunitas Wisata Solo',
+            'SMA Negeri 1 Surakarta',
+            'SD Negeri 3 Laweyan',
+            'SMP Negeri 5 Surakarta',
+            'TK Pelita Bangsa',
+            'SD Negeri 2 Banjarsari',
+            'SMP Negeri 8 Surakarta',
+            'Universitas Muhammadiyah Surakarta',
+            'Komunitas Sejarah Solo',
+            'SMA Negeri 3 Surakarta',
+            'Dinas Perhubungan',
+            'Kecamatan Laweyan',
+        ];
+
+        $jumlahPerBulan = [
+            5, 7, 8, 9, 10, 12,
+            14, 13, 12, 11, 10, 9,
+        ];
+
+        // Total 120 status dengan distribusi yang ditentukan.
+        $statuses = array_merge(
+            array_fill(0, 48, 'Disetujui'),
+            array_fill(0, 30, 'Diproses'),
+            array_fill(0, 24, 'Menunggu'),
+            array_fill(0, 18, 'Ditolak')
+        );
+
+        // Acak status agar tersebar di berbagai bulan dan layanan.
+        mt_srand(2026);
+        shuffle($statuses);
+
+        $slugs = [
+            'angkutan-listrik',
+            'bus-tingkat',
+            'bus-edukasi',
+            'kereta-jaladara',
+        ];
+
+        $titikPemberhentian = [
+            'Kantor Dishub Surakarta',
+            'Terminal Tirtonadi',
+            'Benteng Vastenburg',
+            'Stasiun Purwosari',
+            'Balai Kota Surakarta',
+            'Manahan',
+            'Kawasan Keraton Surakarta',
+            'Monumen Pers',
+        ];
+
+        DB::transaction(function () use (
+            $admin,
+            $layanans,
+            $namaPemesan,
+            $instansi,
+            $jumlahPerBulan,
+            $statuses,
+            $slugs,
+            $titikPemberhentian
+        ) {
+            $index = 0;
+
+            foreach ($jumlahPerBulan as $bulanIndex => $jumlah) {
+                $bulan = $bulanIndex + 1;
+
+                for ($j = 0; $j < $jumlah; $j++) {
+                    $layananSlug = $slugs[$index % 4];
+
+                    $layanan = $layanans->get($layananSlug);
+
+                    if (!$layanan) {
+                        throw new \RuntimeException(
+                            "Layanan {$layananSlug} tidak ditemukan."
+                        );
+                    }
+
+                    // Mengambil rute asli dari model.
+                    $ruteOptions = LaporanPemesanan::RUTE_OPTIONS[$layananSlug];
+
+                    $rute = $ruteOptions[
+                        $index % count($ruteOptions)
+                    ];
+
+                    // Tanggal pemesanan tersebar sepanjang bulan.
+                    $hari = 2 + (($j * 5 + $index) % 25);
+
+                    $tanggalPemesanan = Carbon::create(
+                        2026,
+                        $bulan,
+                        $hari
+                    );
+
+                    // Tanggal pelaksanaan setelah tanggal pemesanan.
+                    $tanggalPelaksanaan = $tanggalPemesanan
+                        ->copy()
+                        ->addDays(3 + ($index % 10));
+
+                    $nama = $namaPemesan[
+                        $index % count($namaPemesan)
+                    ];
+
+                    $namaInstansi = $instansi[
+                        $index % count($instansi)
+                    ];
+
+                    LaporanPemesanan::updateOrCreate(
+                        [
+                            'kode_laporan' => 'DUMMY-2026-' .
+                                str_pad($index + 1, 3, '0', STR_PAD_LEFT),
+                        ],
+                        [
+                            'layanan_id' => $layanan->id,
+                            'user_id' => $admin->id,
+                            'nama_pemesan' => $nama,
+                            'instansi' => $namaInstansi,
+                            'no_telepon' => '0812345678' .
+                                str_pad($index + 1, 2, '0', STR_PAD_LEFT),
+                            'tanggal_pemesanan' => $tanggalPemesanan
+                                ->format('Y-m-d'),
+                            'tanggal_pelaksanaan' => $tanggalPelaksanaan
+                                ->format('Y-m-d'),
+                            'jam_berangkat' => sprintf(
+                                '%02d:%02d',
+                                7 + ($index % 5),
+                                ($index % 4) * 15
+                            ),
+                            'rute' => $rute,
+                            'titik_pemberhentian' =>
+                                $titikPemberhentian[
+                                    $index % count($titikPemberhentian)
+                                ],
+                            'jumlah_pemesanan' => 10 + (($index * 7) % 41),
+                            'keperluan' =>
+                                'Kegiatan kunjungan, wisata, edukasi, ' .
+                                'dan perjalanan rombongan.',
+                            'status' => $statuses[$index],
+                            'keterangan' =>
+                                'Data dummy untuk pengujian aplikasi Dishub.',
+                        ]
+                    );
+
+                    $index++;
+                }
+            }
+        });
+
+        $this->command->info(
+            'Berhasil memproses 120 data dummy laporan tahun 2026.'
+        );
+    }
+}
+
+
+
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\seeders\LayananSeeder.php
+==================================================
 <?php
 
 namespace Database\Seeders;
@@ -2860,9 +3083,9 @@ class LayananSeeder extends Seeder
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\database\seeders\UserSeeder.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\database\seeders\UserSeeder.php
+==================================================
 <?php
 
 namespace Database\Seeders;
@@ -2902,9 +3125,109 @@ class UserSeeder extends Seeder
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\public\index.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\public\fonts-manifest.dev.json
+==================================================
+{
+  "version": 1,
+  "style": {
+    "inline": "@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/404e1bea03675885.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/3cbe4e6d307ceb1c.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/2b04ece98155b724.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/52066ce4dd665f39.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/b21529c9b840ddc4.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/f90bc9513fcb0764.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n:root {\n  --font-instrument-sans: \"Instrument Sans\";\n}\n\n.font-instrument-sans {\n  font-family: var(--font-instrument-sans);\n}\n",
+    "familyStyles": {
+      "instrument-sans": "@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/404e1bea03675885.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/3cbe4e6d307ceb1c.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/2b04ece98155b724.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/52066ce4dd665f39.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/b21529c9b840ddc4.woff2\") format(\"woff2\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n@font-face {\n  font-family: \"Instrument Sans\";\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"http://[::1]:5173/__laravel_vite_plugin__/fonts/f90bc9513fcb0764.woff\") format(\"woff\");\n  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;\n}\n\n.font-instrument-sans {\n  font-family: var(--font-instrument-sans);\n}"
+    },
+    "variables": {
+      "instrument-sans": "--font-instrument-sans: \"Instrument Sans\";"
+    }
+  },
+  "preloads": [
+    {
+      "alias": "instrument-sans",
+      "family": "Instrument Sans",
+      "weight": 400,
+      "style": "normal",
+      "url": "http://[::1]:5173/__laravel_vite_plugin__/fonts/404e1bea03675885.woff2",
+      "as": "font",
+      "type": "font/woff2",
+      "crossorigin": "anonymous"
+    },
+    {
+      "alias": "instrument-sans",
+      "family": "Instrument Sans",
+      "weight": 500,
+      "style": "normal",
+      "url": "http://[::1]:5173/__laravel_vite_plugin__/fonts/2b04ece98155b724.woff2",
+      "as": "font",
+      "type": "font/woff2",
+      "crossorigin": "anonymous"
+    },
+    {
+      "alias": "instrument-sans",
+      "family": "Instrument Sans",
+      "weight": 600,
+      "style": "normal",
+      "url": "http://[::1]:5173/__laravel_vite_plugin__/fonts/b21529c9b840ddc4.woff2",
+      "as": "font",
+      "type": "font/woff2",
+      "crossorigin": "anonymous"
+    }
+  ],
+  "families": {
+    "instrument-sans": {
+      "family": "Instrument Sans",
+      "variable": "--font-instrument-sans",
+      "variants": {
+        "400:normal": {
+          "files": [
+            {
+              "url": "http://[::1]:5173/__laravel_vite_plugin__/fonts/404e1bea03675885.woff2",
+              "format": "woff2",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            },
+            {
+              "url": "http://[::1]:5173/__laravel_vite_plugin__/fonts/3cbe4e6d307ceb1c.woff",
+              "format": "woff",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            }
+          ]
+        },
+        "500:normal": {
+          "files": [
+            {
+              "url": "http://[::1]:5173/__laravel_vite_plugin__/fonts/2b04ece98155b724.woff2",
+              "format": "woff2",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            },
+            {
+              "url": "http://[::1]:5173/__laravel_vite_plugin__/fonts/52066ce4dd665f39.woff",
+              "format": "woff",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            }
+          ]
+        },
+        "600:normal": {
+          "files": [
+            {
+              "url": "http://[::1]:5173/__laravel_vite_plugin__/fonts/b21529c9b840ddc4.woff2",
+              "format": "woff2",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            },
+            {
+              "url": "http://[::1]:5173/__laravel_vite_plugin__/fonts/f90bc9513fcb0764.woff",
+              "format": "woff",
+              "unicodeRange": "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+
+
+
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\public\index.php
+==================================================
 <?php
 
 use Illuminate\Foundation\Application;
@@ -2929,17 +3252,17 @@ $app->handleRequest(Request::capture());
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\js\app.js
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\js\app.js
+==================================================
 //
 
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\auth\login.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\auth\login.blade.php
+==================================================
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -3057,9 +3380,9 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\auth\login.blade.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\components\sidebar.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\components\sidebar.blade.php
+==================================================
 <div class="sidebar">
     <div class="logo-area">
         <i class="bi bi-bus-front-fill"></i> Dishub Surakarta
@@ -3109,9 +3432,9 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\components\sidebar.blade.p
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\components\topbar.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\components\topbar.blade.php
+==================================================
 <div class="topbar">
     <div class="d-flex align-items-center">
         <h5 class="mb-0 text-dark fw-bold">@yield('page_title', 'Dashboard')</h5>
@@ -3130,9 +3453,9 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\components\topbar.blade.ph
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\dashboard\index.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\dashboard\index.blade.php
+==================================================
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
@@ -3313,9 +3636,9 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\dashboard\index.blade.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\laporan\create.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\laporan\create.blade.php
+==================================================
 @extends('layouts.app')
 
 @section('title', 'Tambah Laporan - ' . $layanan->nama_layanan)
@@ -3427,6 +3750,7 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\laporan\create.blade.php
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold small">Status <span class="text-danger">*</span></label>
                                 <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                                    <option value="">-- Pilih Status --</option>
                                     @foreach (\App\Models\LaporanPemesanan::STATUS_OPTIONS as $status)
                                         <option value="{{ $status }}" {{ old('status') == $status ? 'selected' : '' }}>{{ $status }}</option>
                                     @endforeach
@@ -3461,9 +3785,9 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\laporan\create.blade.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\laporan\edit.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\laporan\edit.blade.php
+==================================================
 @extends('layouts.app')
 
 @section('title', 'Edit Laporan - ' . $laporan->layanan->nama_layanan)
@@ -3602,9 +3926,9 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\laporan\edit.blade.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\laporan\pdf.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\laporan\pdf.blade.php
+==================================================
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -3685,9 +4009,169 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\laporan\pdf.blade.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\layanan\show.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\laporan\show.blade.php
+==================================================
+@extends('layouts.app')
+
+@section('title', 'Detail Laporan - ' . $laporan->kode_laporan)
+@section('page_title', 'Detail Laporan')
+
+@section('content')
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm" style="border-radius: 16px;">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                        <div>
+                            <h5 class="fw-bold mb-1">Detail Laporan</h5>
+                            <p class="text-muted small mb-0">Kode: <code class="bg-light px-2 py-1 rounded">{{ $laporan->kode_laporan }}</code></p>
+                        </div>
+
+                        {{-- Tombol Edit & Hapus (Hanya untuk Admin) --}}
+                        @if(auth()->user()->role === 'admin')
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('laporan.edit', $laporan) }}" class="btn btn-warning text-white" style="border-radius: 10px;">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <form action="{{ route('laporan.destroy', $laporan) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus laporan ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-danger" style="border-radius: 10px;">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            </form>
+                        </div>
+                        @endif
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Layanan</small>
+                                <div class="fw-bold fs-5 text-primary">{{ $laporan->layanan->nama_layanan }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Status</small>
+                                <div class="mt-1">
+                                    @php
+                                        $badgeClass = match($laporan->status) {
+                                            'Disetujui' => 'bg-success text-white',
+                                            'Ditolak' => 'bg-danger text-white',
+                                            'Diproses' => 'bg-info text-white',
+                                            default => 'bg-warning text-dark',
+                                        };
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }} px-3 py-2" style="font-size: 14px; border-radius: 20px;">
+                                        {{ $laporan->status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Nama Pemesan</small>
+                                <div class="fw-bold">{{ $laporan->nama_pemesan }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Instansi</small>
+                                <div class="fw-bold">{{ $laporan->instansi }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">No. Telepon</small>
+                                <div class="fw-bold">{{ $laporan->no_telepon ?? '-' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Jumlah Pemesanan</small>
+                                <div class="fw-bold">{{ $laporan->jumlah_pemesanan }} Orang</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Tanggal Pemesanan</small>
+                                <div class="fw-bold">{{ $laporan->tanggal_pemesanan->format('d M Y') }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Tanggal Pelaksanaan</small>
+                                <div class="fw-bold">{{ $laporan->tanggal_pelaksanaan ? $laporan->tanggal_pelaksanaan->format('d M Y') : '-' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Jam Berangkat</small>
+                                <div class="fw-bold">{{ $laporan->jam_berangkat ? \Carbon\Carbon::parse($laporan->jam_berangkat)->format('H:i') : '-' }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Rute</small>
+                                <div class="fw-bold">{{ $laporan->rute ?? '-' }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Titik Pemberhentian</small>
+                                <div class="fw-bold">{{ $laporan->titik_pemberhentian ?? '-' }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Keperluan</small>
+                                <div class="fw-bold">{{ $laporan->keperluan }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Keterangan Tambahan</small>
+                                <div class="fw-bold">{{ $laporan->keterangan ?? '-' }}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Dibuat Oleh</small>
+                                <div class="fw-bold">{{ $laporan->user->name ?? 'Sistem' }} ({{ ucfirst($laporan->user->role ?? 'admin') }})</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top">
+                        <a href="{{ route('layanan.show', $laporan->layanan->slug) }}" class="btn btn-outline-secondary" style="border-radius: 10px;">
+                            <i class="bi bi-arrow-left"></i> Kembali ke Daftar Laporan
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+
+
+
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\layanan\show.blade.php
+==================================================
 @extends('layouts.app')
 
 @section('title', 'Laporan ' . $layanan->nama_layanan)
@@ -3953,9 +4437,9 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\layanan\show.blade.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\layouts\app.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\layouts\app.blade.php
+==================================================
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -4003,7 +4487,6 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\layouts\app.blade.php
         @endif
 
         @yield('content')
-            @yield('content')
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -4014,9 +4497,9 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\layouts\app.blade.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\resources\views\welcome.blade.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\resources\views\welcome.blade.php
+==================================================
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -4244,9 +4727,9 @@ FILE: D:\laragon\www\dishub-surakarta\resources\views\welcome.blade.php
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\routes\console.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\routes\console.php
+==================================================
 <?php
 
 use Illuminate\Foundation\Inspiring;
@@ -4259,9 +4742,9 @@ Artisan::command('inspire', function () {
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\routes\web.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\routes\web.php
+==================================================
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
@@ -4322,9 +4805,9 @@ Route::middleware('auth')->group(function () {
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\tests\Feature\ExampleTest.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\tests\Feature\ExampleTest.php
+==================================================
 <?php
 
 namespace Tests\Feature;
@@ -4348,9 +4831,9 @@ class ExampleTest extends TestCase
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\tests\Unit\ExampleTest.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\tests\Unit\ExampleTest.php
+==================================================
 <?php
 
 namespace Tests\Unit;
@@ -4371,9 +4854,9 @@ class ExampleTest extends TestCase
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\tests\TestCase.php
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\tests\TestCase.php
+==================================================
 <?php
 
 namespace Tests;
@@ -4388,9 +4871,9 @@ abstract class TestCase extends BaseTestCase
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\AGENTS.md
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\AGENTS.md
+==================================================
 <laravel-boost-guidelines>
 # Laravel Application
 
@@ -4442,9 +4925,9 @@ Boost replaces these bootstrap instructions with guidelines tailored to the appl
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\CLAUDE.md
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\CLAUDE.md
+==================================================
 <laravel-boost-guidelines>
 # Laravel Application
 
@@ -4496,9 +4979,9 @@ Boost replaces these bootstrap instructions with guidelines tailored to the appl
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\composer.json
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\composer.json
+==================================================
 {
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
@@ -4590,9 +5073,2332 @@ FILE: D:\laragon\www\dishub-surakarta\composer.json
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\package.json
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\package-lock.json
+==================================================
+{
+    "name": "dishub",
+    "lockfileVersion": 3,
+    "requires": true,
+    "packages": {
+        "": {
+            "devDependencies": {
+                "@tailwindcss/vite": "^4.0.0",
+                "concurrently": "^10.0.3",
+                "laravel-vite-plugin": "^3.1",
+                "tailwindcss": "^4.0.0",
+                "vite": "^8.0.0"
+            },
+            "optionalDependencies": {
+                "@laravel/multiplex": "^0.4.1"
+            }
+        },
+        "node_modules/@alcalzone/ansi-tokenize": {
+            "version": "0.3.2",
+            "resolved": "https://registry.npmjs.org/@alcalzone/ansi-tokenize/-/ansi-tokenize-0.3.2.tgz",
+            "integrity": "sha512-GZdcaU9RV2Gn9SAg1hcsSoQ4nIWZfutPqIvxayUYsOzfBPJioJ+aQIXnMJiGDz+35Gg2pskkPxioYnSblPELEw==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "ansi-styles": "^6.2.1",
+                "is-fullwidth-code-point": "^5.0.0"
+            },
+            "engines": {
+                "node": ">=18"
+            }
+        },
+        "node_modules/@alcalzone/ansi-tokenize/node_modules/ansi-styles": {
+            "version": "6.2.3",
+            "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-6.2.3.tgz",
+            "integrity": "sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=12"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+            }
+        },
+        "node_modules/@emnapi/core": {
+            "version": "2.0.0-beta.2",
+            "resolved": "https://registry.npmjs.org/@emnapi/core/-/core-2.0.0-beta.2.tgz",
+            "integrity": "sha512-MzCVoWtcg4Pm2B3je5mMvYMvj3MmBKw+fU7vbsJc9/iT8ip6/eYIHo/Dsm/mr+wsHB6SEyJDuxB09Yy6r/8+4A==",
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "@emnapi/wasi-threads": "2.2.0",
+                "tslib": "^2.4.0"
+            }
+        },
+        "node_modules/@emnapi/runtime": {
+            "version": "2.0.0-beta.2",
+            "resolved": "https://registry.npmjs.org/@emnapi/runtime/-/runtime-2.0.0-beta.2.tgz",
+            "integrity": "sha512-JcrSPzPvZuNZvJqPTF9Fw25LbOJ8avzFVlaf2grmH4Cku0oGP47tRgqPZadcfj3YoZMHkFVnCYFbQM8I+i5QEw==",
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "tslib": "^2.4.0"
+            }
+        },
+        "node_modules/@emnapi/wasi-threads": {
+            "version": "2.2.0",
+            "resolved": "https://registry.npmjs.org/@emnapi/wasi-threads/-/wasi-threads-2.2.0.tgz",
+            "integrity": "sha512-JP7OYH38Q7+pyTAe14raZHLQIK7BDKbdwji+Xi3pcd/6QkJYQH3SX4wu6EplGrGJWRepoNzedfm0G3B9Z4e9Rw==",
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "tslib": "^2.4.0"
+            }
+        },
+        "node_modules/@jridgewell/gen-mapping": {
+            "version": "0.3.13",
+            "resolved": "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.3.13.tgz",
+            "integrity": "sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "@jridgewell/sourcemap-codec": "^1.5.0",
+                "@jridgewell/trace-mapping": "^0.3.24"
+            }
+        },
+        "node_modules/@jridgewell/remapping": {
+            "version": "2.3.5",
+            "resolved": "https://registry.npmjs.org/@jridgewell/remapping/-/remapping-2.3.5.tgz",
+            "integrity": "sha512-LI9u/+laYG4Ds1TDKSJW2YPrIlcVYOwi2fUC6xB43lueCjgxV4lffOCZCtYFiH6TNOX+tQKXx97T4IKHbhyHEQ==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "@jridgewell/gen-mapping": "^0.3.5",
+                "@jridgewell/trace-mapping": "^0.3.24"
+            }
+        },
+        "node_modules/@jridgewell/resolve-uri": {
+            "version": "3.1.3",
+            "resolved": "https://registry.npmjs.org/@jridgewell/resolve-uri/-/resolve-uri-3.1.3.tgz",
+            "integrity": "sha512-lhTtjtoEArWBjismtfS761S9Hlyn+nIZqOZVYoZ1Xn82PMNMVnk+jj/NhC4fAXGTs7ydONcJiR5vyQBTMDu27g==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=6.0.0"
+            }
+        },
+        "node_modules/@jridgewell/sourcemap-codec": {
+            "version": "1.6.0",
+            "resolved": "https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.6.0.tgz",
+            "integrity": "sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==",
+            "dev": true,
+            "license": "MIT"
+        },
+        "node_modules/@jridgewell/trace-mapping": {
+            "version": "0.3.31",
+            "resolved": "https://registry.npmjs.org/@jridgewell/trace-mapping/-/trace-mapping-0.3.31.tgz",
+            "integrity": "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "@jridgewell/resolve-uri": "^3.1.0",
+                "@jridgewell/sourcemap-codec": "^1.4.14"
+            }
+        },
+        "node_modules/@laravel/multiplex": {
+            "version": "0.4.5",
+            "resolved": "https://registry.npmjs.org/@laravel/multiplex/-/multiplex-0.4.5.tgz",
+            "integrity": "sha512-NhDhj4b1/+6j1xYnonzx3vZa39CAUUM7iCAN0xZ5jjcYw3GKORtiXXb0XwXW74wyeVJ25vAvXzfIhy4MXmmzCw==",
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "darwin",
+                "linux"
+            ],
+            "dependencies": {
+                "ansi-styles": "^7.0.0",
+                "commander": "^15.0.0",
+                "ink": "^7.1.0",
+                "react": "^19.2.7",
+                "string-width": "^8.2.2",
+                "wrap-ansi": "^10.0.0"
+            },
+            "bin": {
+                "multiplex": "dist/cli.js"
+            },
+            "engines": {
+                "node": ">=22.13.0"
+            }
+        },
+        "node_modules/@napi-rs/wasm-runtime": {
+            "version": "1.2.6",
+            "resolved": "https://registry.npmjs.org/@napi-rs/wasm-runtime/-/wasm-runtime-1.2.6.tgz",
+            "integrity": "sha512-mRyDmEw9/fCDXCGfL1sbgIw/GUK0PVxRW4YwgPN61F3LQ+fSyoBFarJVzgGyhF6kRzEQZ0FejDqm4WLXSeqQmw==",
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "@tybys/wasm-util": "^0.10.3"
+            },
+            "engines": {
+                "node": "^20.19.0 || ^22.13.0 || >=23.5.0"
+            },
+            "funding": {
+                "type": "github",
+                "url": "https://github.com/sponsors/Brooooooklyn"
+            },
+            "peerDependencies": {
+                "@emnapi/core": "^1.7.1 || 2.0.0-beta.2",
+                "@emnapi/runtime": "^1.7.1 || 2.0.0-beta.2"
+            }
+        },
+        "node_modules/@oxc-project/types": {
+            "version": "0.156.0",
+            "resolved": "https://registry.npmjs.org/@oxc-project/types/-/types-0.156.0.tgz",
+            "integrity": "sha512-1Duyg48TdJNdyhEB8Xn1L36bT9Pv6GUtlKjHxOys8xkaF/rQq3XJE+bAurSK/AgIz5mGFsb77cn9Pb20+WCScw==",
+            "dev": true,
+            "license": "MIT",
+            "funding": {
+                "url": "https://github.com/sponsors/oxc-project"
+            }
+        },
+        "node_modules/@rolldown/binding-android-arm-eabi": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-android-arm-eabi/-/binding-android-arm-eabi-1.2.19.tgz",
+            "integrity": "sha512-e+Ebe0WT+9tbXmNKPIiC8YrWAHYwug3m6i4p3rZGGulfZri1jtI4HslT+OZnFf/OIHowWF71DTlHwXBP2SiA7A==",
+            "cpu": [
+                "arm"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "android"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-android-arm64": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-android-arm64/-/binding-android-arm64-1.2.19.tgz",
+            "integrity": "sha512-hOombrTJ+szt2ciEzS7oCA78lMPBgF5UMQWCJIyNfnrI7GLl8HYoFqCnpL2gcPOaXMqryGCU5ExdQKyDDcC+yA==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "android"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-darwin-arm64": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-darwin-arm64/-/binding-darwin-arm64-1.2.19.tgz",
+            "integrity": "sha512-XoMA2pwCKGTQzUjPgtRwkedH4WmXhdIPKT6l6oOxd1PUbNodGI6DcBekgN7EC//+x3pfBYX/qL1gNmZAqivw5g==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "darwin"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-darwin-x64": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-darwin-x64/-/binding-darwin-x64-1.2.19.tgz",
+            "integrity": "sha512-zo8EsSSwMZCY/e+fRnGaX02YGgvJD0yvhNi/9hpGPA2MJ9ZF8dPCw75UGfpI6OpQ/myR/dIYmogRvqiZD0TrXg==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "darwin"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-freebsd-x64": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-freebsd-x64/-/binding-freebsd-x64-1.2.19.tgz",
+            "integrity": "sha512-O8ISAOfI1nj7AuBPd30FSF47z7f7lzlk5poQVGgiikvQuGEBFYvW8ki+UEnT+YJPnNGjQzn304klt4O9FUE7mA==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "freebsd"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-linux-arm-gnueabihf": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm-gnueabihf/-/binding-linux-arm-gnueabihf-1.2.19.tgz",
+            "integrity": "sha512-/lYCba5NO0yq4S0jGMH8QTBtkvQxoXjoQWzF5BcWp9MjB9jxVRD1GQDNofkVjcOj30DWyhLIN/4Oe60JKzaONw==",
+            "cpu": [
+                "arm"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-linux-arm64-gnu": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-1.2.19.tgz",
+            "integrity": "sha512-pm/apFMBnSbFb3O6nG5pHO1iqHhZrjGDFEjSm+ot9J17XXPvH9L90y5h+jgfHCE+Qdlsvy8qKEcU4VKxgjD+vA==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "libc": [
+                "glibc"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-linux-arm64-musl": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-arm64-musl/-/binding-linux-arm64-musl-1.2.19.tgz",
+            "integrity": "sha512-K1SmQp3FFichn8oqrNIwvFoZ5wcvjC7goBzpaMNvLf9FZc+QB/QvLmnpJZgAAGHiD980tP8FZZnXk2K94rvlxg==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "libc": [
+                "musl"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-linux-ppc64-gnu": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-ppc64-gnu/-/binding-linux-ppc64-gnu-1.2.19.tgz",
+            "integrity": "sha512-I0xwD57jP/3A7+5UPZin2w8Y7XHEmEM5zqpYZOcQ45MlNW6tUJUziymV3yRr7rL4vwyfEcRsRksC4a7Kc08p5Q==",
+            "cpu": [
+                "ppc64"
+            ],
+            "dev": true,
+            "libc": [
+                "glibc"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-linux-s390x-gnu": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-s390x-gnu/-/binding-linux-s390x-gnu-1.2.19.tgz",
+            "integrity": "sha512-BrtEHT24SNXj9HiXqy+s/kXiSiQGt6EKCPUlRirAoIioVxKGnbXBUEkbZASAei7iZJB0/Ynm+0JP00Ipx7AnSw==",
+            "cpu": [
+                "s390x"
+            ],
+            "dev": true,
+            "libc": [
+                "glibc"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-linux-x64-gnu": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-x64-gnu/-/binding-linux-x64-gnu-1.2.19.tgz",
+            "integrity": "sha512-rm75/9DkHKeU2WnA8w4X94WGYgLlDCFCfkQC+4bguVJmC/jvDRv2B+2wLOYhyE0fVuv7//Ckk39OoOufyCu76Q==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "libc": [
+                "glibc"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-linux-x64-musl": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-linux-x64-musl/-/binding-linux-x64-musl-1.2.19.tgz",
+            "integrity": "sha512-irh/4+iYFM4GAzpluDErgjz89bj6NDtqqMAG/6O1LG38Ed3NpyebzCpcVNkFW8uhy+/3/BocUvnXDR33CXWe9A==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "libc": [
+                "musl"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-openharmony-arm64": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-openharmony-arm64/-/binding-openharmony-arm64-1.2.19.tgz",
+            "integrity": "sha512-+KWTWNoPt+CfSq94CiceWu3yPE+QzkaG+phPyz9G60tmZLwfQkcA4AeksafzvJAw4pvg1mcd5a1TkUqVv0s4JA==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "openharmony"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-wasm32-wasi": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-wasm32-wasi/-/binding-wasm32-wasi-1.2.19.tgz",
+            "integrity": "sha512-7EH+skOsl5qpWnK0vzamgJFhOv1cwxQpsxm8tI883K9fur5c27p8q87fzEO6BbBPabA2/+s/zR63/pLc137iOg==",
+            "cpu": [
+                "wasm32"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "@emnapi/core": "2.0.0-beta.2",
+                "@emnapi/runtime": "2.0.0-beta.2",
+                "@napi-rs/wasm-runtime": "1.2.6"
+            },
+            "engines": {
+                "node": "^20.19.0 || ^22.13.0 || >=23.5.0"
+            }
+        },
+        "node_modules/@rolldown/binding-win32-arm64-msvc": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-1.2.19.tgz",
+            "integrity": "sha512-3Q1Yg1Q7tEvBWoZf5rFvG/GKZQPgwfru+p4wBajDfJFBs0SHCpL++dfTjW9gyAKd1T7ZpIYvdaUax7Pa/IhFVQ==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "win32"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/binding-win32-x64-msvc": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/@rolldown/binding-win32-x64-msvc/-/binding-win32-x64-msvc-1.2.19.tgz",
+            "integrity": "sha512-y/sqRRc6d7hECzOFc5n3LSeqctmIp9mMjY1Kq4s14uLPd/LZ4z7i1zrW6fMtp2mPeuQIC4e6ULMcwQzMomqQag==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "win32"
+            ],
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            }
+        },
+        "node_modules/@rolldown/pluginutils": {
+            "version": "1.1.1",
+            "resolved": "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.1.1.tgz",
+            "integrity": "sha512-glFIJDvLNDtJhT9qrMFWLPbvS+skxgt4L0K8Ei2YtnhPysAJnsI7nyxSJxKj4ADeKX0OLjC4ntRkwpLOoS3rwA==",
+            "dev": true,
+            "license": "MIT"
+        },
+        "node_modules/@tailwindcss/node": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/node/-/node-4.3.5.tgz",
+            "integrity": "sha512-yT53FzV4ke0cr/BguDxhWMpm5MJu1O2muzk+tKw6lKHjODAsYArBbWwFbJiaksfzFv1tpkO9QHGzmfs1hJT66g==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "@jridgewell/remapping": "^2.3.5",
+                "enhanced-resolve": "^5.24.5",
+                "jiti": "^2.7.0",
+                "lightningcss": "1.33.0",
+                "magic-string": "^1.1.0",
+                "source-map-js": "^1.2.1",
+                "tailwindcss": "4.3.5"
+            }
+        },
+        "node_modules/@tailwindcss/oxide": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide/-/oxide-4.3.5.tgz",
+            "integrity": "sha512-PynqGLZsZvwM9tqD/CUxkOIfyd6K5elZ2MooauzJryP/UqXYgi3yYbtt3N0Xe+MHV/eFKPFQCEfIKAqlAS1CBg==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">= 20"
+            },
+            "optionalDependencies": {
+                "@tailwindcss/oxide-android-arm64": "4.3.5",
+                "@tailwindcss/oxide-darwin-arm64": "4.3.5",
+                "@tailwindcss/oxide-darwin-x64": "4.3.5",
+                "@tailwindcss/oxide-freebsd-x64": "4.3.5",
+                "@tailwindcss/oxide-linux-arm-gnueabihf": "4.3.5",
+                "@tailwindcss/oxide-linux-arm64-gnu": "4.3.5",
+                "@tailwindcss/oxide-linux-arm64-musl": "4.3.5",
+                "@tailwindcss/oxide-linux-x64-gnu": "4.3.5",
+                "@tailwindcss/oxide-linux-x64-musl": "4.3.5",
+                "@tailwindcss/oxide-wasm32-wasi": "4.3.5",
+                "@tailwindcss/oxide-win32-arm64-msvc": "4.3.5",
+                "@tailwindcss/oxide-win32-x64-msvc": "4.3.5"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-android-arm64": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-android-arm64/-/oxide-android-arm64-4.3.5.tgz",
+            "integrity": "sha512-Se0z5xMqcSQanJD1IYmO0cGpK3iv0fp3ZsIT7xRJZ1Da5PghvNoc46zz4jIQn+aan3dV9T8AermFNN9QPmsh0Q==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "android"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-darwin-arm64": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-darwin-arm64/-/oxide-darwin-arm64-4.3.5.tgz",
+            "integrity": "sha512-UPrgTDuUbvmqGMZuCnmI3FKee/tYKzKdp00/kuB4oSGB213VYg8QTdF7lVhnPoBXq/mIfJ+ILoBFqNOboWcMwQ==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "darwin"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-darwin-x64": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-darwin-x64/-/oxide-darwin-x64-4.3.5.tgz",
+            "integrity": "sha512-E+p7HEtjI0b8D7kbbWxH067cGui6d4c79COGko9fAPVE3rwc1E7ld2HFCbaG86AOGWS5VKQYqZOaf38ya4uxTQ==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "darwin"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-freebsd-x64": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-freebsd-x64/-/oxide-freebsd-x64-4.3.5.tgz",
+            "integrity": "sha512-yWEWcWyAG7rWOcTpJTjdhQ3pcaFY2h+0bqTRfgU3G2fz87ZU3AKdvdZKhslD+kyHnjBUWKvNdRYwIYC5dI1tIg==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "freebsd"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-linux-arm-gnueabihf": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-arm-gnueabihf/-/oxide-linux-arm-gnueabihf-4.3.5.tgz",
+            "integrity": "sha512-WmeVjtJhZlr+smpqcdR2kQkkn6arHIJnUIBxTO2EJcTLGY1ecVXNo2hbSn8xc0IH2aEtys936iMWKGyj0GaKnA==",
+            "cpu": [
+                "arm"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-linux-arm64-gnu": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-arm64-gnu/-/oxide-linux-arm64-gnu-4.3.5.tgz",
+            "integrity": "sha512-DTCSyucc6ShMp1QMqV5R94Z7xlgNgUzkGmFF1rL5HH2Qjy4eSmEqy+YLGkqqYvWa4sILtgrBt1JjRKbneQtiFQ==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "libc": [
+                "glibc"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-linux-arm64-musl": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-arm64-musl/-/oxide-linux-arm64-musl-4.3.5.tgz",
+            "integrity": "sha512-H9lsvO4x9E4nE4Hi8h7NHHw0O/kcVSu+iOyFHNGdYzazGgDjFHZbE6S3hQ8kMcbNXSBlMdNi67LV5EVqtpaJtw==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "libc": [
+                "musl"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-linux-x64-gnu": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-x64-gnu/-/oxide-linux-x64-gnu-4.3.5.tgz",
+            "integrity": "sha512-4uxQvtBvPuIdl13WfUBj9xMZHH14PtHZ8OZdtLmdyDtG66sCa1t599NZT+jagkUzRtWhuul1qRZQ1nAJscXN5g==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "libc": [
+                "glibc"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-linux-x64-musl": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-x64-musl/-/oxide-linux-x64-musl-4.3.5.tgz",
+            "integrity": "sha512-0JQAzs7jwbA7O6+z/adU+Jk3AXwsu3npAhtr5escXS7TqEqWcaDV7qHuI+0Vy/KQRuVGnLQREcSJWYauyV3oqg==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "libc": [
+                "musl"
+            ],
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-wasm32-wasi": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-wasm32-wasi/-/oxide-wasm32-wasi-4.3.5.tgz",
+            "integrity": "sha512-OJhFmlEfdzMr+avACdi40RPtnkW0B6hXyxL/8r+tnEHBWZji36CYRjEXrrvgBmaYsD3oEOBqwYFRKsYvzFe7Bw==",
+            "bundleDependencies": [
+                "@napi-rs/wasm-runtime",
+                "@emnapi/core",
+                "@emnapi/runtime",
+                "@tybys/wasm-util",
+                "@emnapi/wasi-threads",
+                "tslib"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "@emnapi/core": "^1.11.3",
+                "@emnapi/runtime": "^1.11.3",
+                "@emnapi/wasi-threads": "^1.2.3",
+                "@napi-rs/wasm-runtime": "^1.2.2",
+                "@tybys/wasm-util": "^0.10.3",
+                "tslib": "^2.8.1"
+            },
+            "engines": {
+                "node": "^20.19.0 || ^22.13.0 || >=23.5.0"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/core": {
+            "version": "1.11.3",
+            "dev": true,
+            "inBundle": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "@emnapi/wasi-threads": "1.2.3",
+                "tslib": "^2.4.0"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/runtime": {
+            "version": "1.11.3",
+            "dev": true,
+            "inBundle": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "tslib": "^2.4.0"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/wasi-threads": {
+            "version": "1.2.3",
+            "dev": true,
+            "inBundle": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "tslib": "^2.4.0"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@napi-rs/wasm-runtime": {
+            "version": "1.2.2",
+            "dev": true,
+            "inBundle": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "@tybys/wasm-util": "^0.10.3"
+            },
+            "engines": {
+                "node": "^20.19.0 || ^22.13.0 || >=23.5.0"
+            },
+            "funding": {
+                "type": "github",
+                "url": "https://github.com/sponsors/Brooooooklyn"
+            },
+            "peerDependencies": {
+                "@emnapi/core": "^1.7.1 || ^2.0.0-alpha.3",
+                "@emnapi/runtime": "^1.7.1 || ^2.0.0-alpha.3"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@tybys/wasm-util": {
+            "version": "0.10.3",
+            "dev": true,
+            "inBundle": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "tslib": "^2.4.0"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/tslib": {
+            "version": "2.8.1",
+            "dev": true,
+            "inBundle": true,
+            "license": "0BSD",
+            "optional": true
+        },
+        "node_modules/@tailwindcss/oxide-win32-arm64-msvc": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-win32-arm64-msvc/-/oxide-win32-arm64-msvc-4.3.5.tgz",
+            "integrity": "sha512-9o8jgthi+QE5eandnboiJT64VQfnIArfZzSTdgbhEK5aafdiu2jTW9Honi/mwYHxBZuH1vAC57IFyrh+0iK5Gg==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "win32"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/oxide-win32-x64-msvc": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-win32-x64-msvc/-/oxide-win32-x64-msvc-4.3.5.tgz",
+            "integrity": "sha512-XiKFfIy1RWe7qK4WqByxNW7Oz1/nkOy8o/BWhHminyV1PmpUd8Eedj5v2A8h2kpqeVlz6xRnwk9Fr/ZXNLcZfg==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "win32"
+            ],
+            "engines": {
+                "node": ">= 20"
+            }
+        },
+        "node_modules/@tailwindcss/vite": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/@tailwindcss/vite/-/vite-4.3.5.tgz",
+            "integrity": "sha512-BCNiY0a1ZjdOHVqw7kyb7U72BwfMF3dfUuN+tQsLWky/J5JOI/r7abibglXfygrZhVO/3u3V+E25kkKTeMkXaQ==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "@tailwindcss/node": "4.3.5",
+                "@tailwindcss/oxide": "4.3.5",
+                "tailwindcss": "4.3.5"
+            },
+            "peerDependencies": {
+                "vite": "^5.2.0 || ^6 || ^7 || ^8"
+            }
+        },
+        "node_modules/@tybys/wasm-util": {
+            "version": "0.10.5",
+            "resolved": "https://registry.npmjs.org/@tybys/wasm-util/-/wasm-util-0.10.5.tgz",
+            "integrity": "sha512-dOGOPxlaNV+G046mZzN+9C0dAcQZeSKcXiVaM0TYy/LM4ttTmgSBDxYfovcYI8Em3+eAbiAYpvWLOv8+ZVRJKA==",
+            "dev": true,
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "tslib": "^2.4.0"
+            }
+        },
+        "node_modules/ansi-escapes": {
+            "version": "7.3.0",
+            "resolved": "https://registry.npmjs.org/ansi-escapes/-/ansi-escapes-7.3.0.tgz",
+            "integrity": "sha512-BvU8nYgGQBxcmMuEeUEmNTvrMVjJNSH7RgW24vXexN4Ven6qCvy4TntnvlnwnMLTVlcRQQdbRY8NKnaIoeWDNg==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "environment": "^1.0.0"
+            },
+            "engines": {
+                "node": ">=18"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/ansi-regex": {
+            "version": "6.6.0",
+            "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-6.6.0.tgz",
+            "integrity": "sha512-XZ5apbzreCbXSKwPjJstu8R0zOi247w3XYwWxtwBXgpZrCyc1Ka7p9/xY0A9/diMewmHbEKz+FIraWaEWjlN5g==",
+            "devOptional": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=12"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/ansi-regex?sponsor=1"
+            }
+        },
+        "node_modules/ansi-styles": {
+            "version": "7.0.0",
+            "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-7.0.0.tgz",
+            "integrity": "sha512-kKvt3m4uwzqL0wlkPd09CmljPJGOZZ4D0fP65sqFSvPkMRKhNi+74MgIJ5QxE6SxqB4t4KyUFGg8+n5zjo6hew==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=22"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+            }
+        },
+        "node_modules/auto-bind": {
+            "version": "5.0.1",
+            "resolved": "https://registry.npmjs.org/auto-bind/-/auto-bind-5.0.1.tgz",
+            "integrity": "sha512-ooviqdwwgfIfNmDwo94wlshcdzfO64XV0Cg6oDsDYBJfITDz1EngD2z7DkbvCWn+XIMsIqW27sEVF6qcpJrRcg==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/chalk": {
+            "version": "5.6.2",
+            "resolved": "https://registry.npmjs.org/chalk/-/chalk-5.6.2.tgz",
+            "integrity": "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==",
+            "devOptional": true,
+            "license": "MIT",
+            "engines": {
+                "node": "^12.17.0 || ^14.13 || >=16.0.0"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/chalk?sponsor=1"
+            }
+        },
+        "node_modules/cli-boxes": {
+            "version": "4.0.1",
+            "resolved": "https://registry.npmjs.org/cli-boxes/-/cli-boxes-4.0.1.tgz",
+            "integrity": "sha512-5IOn+jcCEHEraYolBPs/sT4BxYCe2nHg374OPiItB1O96KZFseS2gthU4twyYzeDcFew4DaUM/xwc5BQf08JJw==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=18.20 <19 || >=20.10"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/cli-cursor": {
+            "version": "4.0.0",
+            "resolved": "https://registry.npmjs.org/cli-cursor/-/cli-cursor-4.0.0.tgz",
+            "integrity": "sha512-VGtlMu3x/4DOtIUwEkRezxUZ2lBacNJCHash0N0WeZDBS+7Ux1dm3XWAgWYxLJFMMdOeXMHXorshEFhbMSGelg==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "restore-cursor": "^4.0.0"
+            },
+            "engines": {
+                "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/cli-truncate": {
+            "version": "6.2.0",
+            "resolved": "https://registry.npmjs.org/cli-truncate/-/cli-truncate-6.2.0.tgz",
+            "integrity": "sha512-5uyZew3nYoDgyltqSI8OER6DuyecorYOSVDAXl9wQ9Y8Re/HaQ/5qP0HmTUOUQqmvtpB+mlsf1gG/FUS3U1gLQ==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "slice-ansi": "^10.0.0",
+                "string-width": "^8.3.0"
+            },
+            "engines": {
+                "node": ">=22"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/cli-truncate/node_modules/slice-ansi": {
+            "version": "10.0.1",
+            "resolved": "https://registry.npmjs.org/slice-ansi/-/slice-ansi-10.0.1.tgz",
+            "integrity": "sha512-CJKEH3zwVX4bOnE+bFbmh+JK/YMT9VAazqBsVBTesnYKXlNtz6oVmrhNp1jHrxHzscuUkWiKZpzNzFraZcrorg==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "ansi-styles": "^7.0.0",
+                "string-width": "^8.3.0"
+            },
+            "engines": {
+                "node": ">=22"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/slice-ansi?sponsor=1"
+            }
+        },
+        "node_modules/cliui": {
+            "version": "9.0.1",
+            "resolved": "https://registry.npmjs.org/cliui/-/cliui-9.0.1.tgz",
+            "integrity": "sha512-k7ndgKhwoQveBL+/1tqGJYNz097I7WOvwbmmU2AR5+magtbjPWQTS1C5vzGkBC8Ym8UWRzfKUzUUqFLypY4Q+w==",
+            "dev": true,
+            "license": "ISC",
+            "dependencies": {
+                "string-width": "^7.2.0",
+                "strip-ansi": "^7.1.0",
+                "wrap-ansi": "^9.0.0"
+            },
+            "engines": {
+                "node": ">=20"
+            }
+        },
+        "node_modules/cliui/node_modules/ansi-styles": {
+            "version": "6.2.3",
+            "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-6.2.3.tgz",
+            "integrity": "sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=12"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+            }
+        },
+        "node_modules/cliui/node_modules/string-width": {
+            "version": "7.2.0",
+            "resolved": "https://registry.npmjs.org/string-width/-/string-width-7.2.0.tgz",
+            "integrity": "sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "emoji-regex": "^10.3.0",
+                "get-east-asian-width": "^1.0.0",
+                "strip-ansi": "^7.1.0"
+            },
+            "engines": {
+                "node": ">=18"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/cliui/node_modules/wrap-ansi": {
+            "version": "9.0.2",
+            "resolved": "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-9.0.2.tgz",
+            "integrity": "sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "ansi-styles": "^6.2.1",
+                "string-width": "^7.0.0",
+                "strip-ansi": "^7.1.0"
+            },
+            "engines": {
+                "node": ">=18"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/wrap-ansi?sponsor=1"
+            }
+        },
+        "node_modules/code-excerpt": {
+            "version": "4.0.0",
+            "resolved": "https://registry.npmjs.org/code-excerpt/-/code-excerpt-4.0.0.tgz",
+            "integrity": "sha512-xxodCmBen3iy2i0WtAK8FlFNrRzjUqjRsMfho58xT/wvZU1YTM3fCnRjcy1gJPMepaRlgm/0e6w8SpWHpn3/cA==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "convert-to-spaces": "^2.0.1"
+            },
+            "engines": {
+                "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+            }
+        },
+        "node_modules/commander": {
+            "version": "15.1.0",
+            "resolved": "https://registry.npmjs.org/commander/-/commander-15.1.0.tgz",
+            "integrity": "sha512-cgnQ88TRrWcC7pVq46RzJVRMktu3W2RcbnoidnfBsl1bmDCBwJS/udcIZpKoCrbAYYaCqsz1yZCVIgbIaU3ddQ==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=22.12.0"
+            }
+        },
+        "node_modules/concurrently": {
+            "version": "10.0.7",
+            "resolved": "https://registry.npmjs.org/concurrently/-/concurrently-10.0.7.tgz",
+            "integrity": "sha512-zMCeLhawVIj3SLbpg0/BWCdJl1wcBSpcHKbNrhaM01P3xAlEWcH30Lea2q+F4uGZ7YM0scDK0dgpWyn1uCJj6w==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "chalk": "5.6.2",
+                "rxjs": "7.8.2",
+                "shell-quote": "1.12.0",
+                "supports-color": "10.2.2",
+                "tree-kill": "1.2.2",
+                "yargs": "18.0.0"
+            },
+            "bin": {
+                "conc": "dist/bin/index.js",
+                "concurrently": "dist/bin/index.js"
+            },
+            "engines": {
+                "node": ">=22"
+            },
+            "funding": {
+                "url": "https://github.com/open-cli-tools/concurrently?sponsor=1"
+            }
+        },
+        "node_modules/convert-to-spaces": {
+            "version": "2.0.1",
+            "resolved": "https://registry.npmjs.org/convert-to-spaces/-/convert-to-spaces-2.0.1.tgz",
+            "integrity": "sha512-rcQ1bsQO9799wq24uE5AM2tAILy4gXGIK/njFWcVQkGNZ96edlpY+A7bjwvzjYvLDyzmG1MmMLZhpcsb+klNMQ==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+            }
+        },
+        "node_modules/detect-libc": {
+            "version": "2.1.2",
+            "resolved": "https://registry.npmjs.org/detect-libc/-/detect-libc-2.1.2.tgz",
+            "integrity": "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==",
+            "dev": true,
+            "license": "Apache-2.0",
+            "engines": {
+                "node": ">=8"
+            }
+        },
+        "node_modules/emoji-regex": {
+            "version": "10.6.0",
+            "resolved": "https://registry.npmjs.org/emoji-regex/-/emoji-regex-10.6.0.tgz",
+            "integrity": "sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==",
+            "dev": true,
+            "license": "MIT"
+        },
+        "node_modules/enhanced-resolve": {
+            "version": "5.27.0",
+            "resolved": "https://registry.npmjs.org/enhanced-resolve/-/enhanced-resolve-5.27.0.tgz",
+            "integrity": "sha512-Do6BB2xzlcc/odFg+XEYyneAx4T/WfywO71yw9ePS2tVfRsf7JVR4mUeELadIeHzixkzbG5DpluiEFPi2WGfYQ==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "graceful-fs": "^4.2.4",
+                "tapable": "^2.3.3"
+            },
+            "engines": {
+                "node": ">=10.13.0"
+            }
+        },
+        "node_modules/environment": {
+            "version": "1.1.0",
+            "resolved": "https://registry.npmjs.org/environment/-/environment-1.1.0.tgz",
+            "integrity": "sha512-xUtoPkMggbz0MPyPiIWr1Kp4aeWJjDZ6SMvURhimjdZgsRuDplF5/s9hcgGhyXMhs+6vpnuoiZ2kFiu3FMnS8Q==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=18"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/es-toolkit": {
+            "version": "1.53.2",
+            "resolved": "https://registry.npmjs.org/es-toolkit/-/es-toolkit-1.53.2.tgz",
+            "integrity": "sha512-iUqZ+NlwH4jUgRmXZUxFBsV/9762TQEa1O4IXLFBmDEjVHScBytKuseX23I0+v9ShZ5MYxEx6WKNzm6IPnex8g==",
+            "license": "MIT",
+            "optional": true,
+            "workspaces": [
+                "docs",
+                "benchmarks",
+                "tests/types",
+                "tests/browser-compat"
+            ]
+        },
+        "node_modules/escalade": {
+            "version": "3.2.0",
+            "resolved": "https://registry.npmjs.org/escalade/-/escalade-3.2.0.tgz",
+            "integrity": "sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=6"
+            }
+        },
+        "node_modules/escape-string-regexp": {
+            "version": "2.0.0",
+            "resolved": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz",
+            "integrity": "sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=8"
+            }
+        },
+        "node_modules/fdir": {
+            "version": "6.5.0",
+            "resolved": "https://registry.npmjs.org/fdir/-/fdir-6.5.0.tgz",
+            "integrity": "sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=12.0.0"
+            },
+            "peerDependencies": {
+                "picomatch": "^3 || ^4"
+            },
+            "peerDependenciesMeta": {
+                "picomatch": {
+                    "optional": true
+                }
+            }
+        },
+        "node_modules/fsevents": {
+            "version": "2.3.3",
+            "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz",
+            "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==",
+            "dev": true,
+            "hasInstallScript": true,
+            "license": "MIT",
+            "optional": true,
+            "os": [
+                "darwin"
+            ],
+            "engines": {
+                "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
+            }
+        },
+        "node_modules/get-caller-file": {
+            "version": "2.0.5",
+            "resolved": "https://registry.npmjs.org/get-caller-file/-/get-caller-file-2.0.5.tgz",
+            "integrity": "sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==",
+            "dev": true,
+            "license": "ISC",
+            "engines": {
+                "node": "6.* || 8.* || >= 10.*"
+            }
+        },
+        "node_modules/get-east-asian-width": {
+            "version": "1.7.0",
+            "resolved": "https://registry.npmjs.org/get-east-asian-width/-/get-east-asian-width-1.7.0.tgz",
+            "integrity": "sha512-XjH1AECxf0giL2V1aU8vKyRR2ppRUb5c0EvT7zuJTokQ74bNo52zOtghqdWIqrhUD79fo3x0WfKZdOqxF6LG1Q==",
+            "devOptional": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=18"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/graceful-fs": {
+            "version": "4.2.12",
+            "resolved": "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.12.tgz",
+            "integrity": "sha512-iuyGF2E4oafQfPsRrG2wtY2ILupMhvtdrhzrxB+0VcjsPpSPttpfYdjnGFGsTi5MaJFjI1jOKHPQ6UTbTj9TAw==",
+            "dev": true,
+            "license": "BlueOak-1.0.0"
+        },
+        "node_modules/indent-string": {
+            "version": "5.0.0",
+            "resolved": "https://registry.npmjs.org/indent-string/-/indent-string-5.0.0.tgz",
+            "integrity": "sha512-m6FAo/spmsW2Ab2fU35JTYwtOKa2yAwXSwgjSv1TJzh4Mh7mC3lzAOVLBprb72XsTrgkEIsl7YrFNAiDiRhIGg==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=12"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/ink": {
+            "version": "7.1.1",
+            "resolved": "https://registry.npmjs.org/ink/-/ink-7.1.1.tgz",
+            "integrity": "sha512-Y43xxa1ZSPvpmfLHcN5o+OdP8Rf8ykkNJEuKYOUNZKT8wXVNLFTtEm1nSDMQkfBH+YANF4Xuu0hhZ4ejqAtN2w==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "@alcalzone/ansi-tokenize": "^0.3.0",
+                "ansi-escapes": "^7.3.0",
+                "ansi-styles": "^6.2.3",
+                "auto-bind": "^5.0.1",
+                "chalk": "^5.6.2",
+                "cli-boxes": "^4.0.1",
+                "cli-cursor": "^4.0.0",
+                "cli-truncate": "^6.0.0",
+                "code-excerpt": "^4.0.0",
+                "es-toolkit": "^1.45.1",
+                "indent-string": "^5.0.0",
+                "is-in-ci": "^2.0.0",
+                "patch-console": "^2.0.0",
+                "react-reconciler": "^0.33.0",
+                "scheduler": "^0.27.0",
+                "signal-exit": "^3.0.7",
+                "slice-ansi": "^9.0.0",
+                "stack-utils": "^2.0.6",
+                "string-width": "^8.2.0",
+                "terminal-size": "^4.0.1",
+                "type-fest": "^5.5.0",
+                "widest-line": "^6.0.0",
+                "wrap-ansi": "^10.0.0",
+                "ws": "^8.20.0",
+                "yoga-layout": "~3.2.1"
+            },
+            "engines": {
+                "node": ">=22"
+            },
+            "peerDependencies": {
+                "@types/react": ">=19.2.0",
+                "react": ">=19.2.0",
+                "react-devtools-core": ">=6.1.2"
+            },
+            "peerDependenciesMeta": {
+                "@types/react": {
+                    "optional": true
+                },
+                "react-devtools-core": {
+                    "optional": true
+                }
+            }
+        },
+        "node_modules/ink/node_modules/ansi-styles": {
+            "version": "6.2.3",
+            "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-6.2.3.tgz",
+            "integrity": "sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=12"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+            }
+        },
+        "node_modules/is-fullwidth-code-point": {
+            "version": "5.1.0",
+            "resolved": "https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-5.1.0.tgz",
+            "integrity": "sha512-5XHYaSyiqADb4RnZ1Bdad6cPp8Toise4TzEjcOYDHZkTCbKgiUl7WTUCpNWHuxmDt91wnsZBc9xinNzopv3JMQ==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "get-east-asian-width": "^1.3.1"
+            },
+            "engines": {
+                "node": ">=18"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/is-in-ci": {
+            "version": "2.0.0",
+            "resolved": "https://registry.npmjs.org/is-in-ci/-/is-in-ci-2.0.0.tgz",
+            "integrity": "sha512-cFeerHriAnhrQSbpAxL37W1wcJKUUX07HyLWZCW1URJT/ra3GyUTzBgUnh24TMVfNTV2Hij2HLxkPHFZfOZy5w==",
+            "license": "MIT",
+            "optional": true,
+            "bin": {
+                "is-in-ci": "cli.js"
+            },
+            "engines": {
+                "node": ">=20"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/jiti": {
+            "version": "2.7.0",
+            "resolved": "https://registry.npmjs.org/jiti/-/jiti-2.7.0.tgz",
+            "integrity": "sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==",
+            "dev": true,
+            "license": "MIT",
+            "bin": {
+                "jiti": "lib/jiti-cli.mjs"
+            }
+        },
+        "node_modules/laravel-vite-plugin": {
+            "version": "3.2.1",
+            "resolved": "https://registry.npmjs.org/laravel-vite-plugin/-/laravel-vite-plugin-3.2.1.tgz",
+            "integrity": "sha512-VqWn6U4YC1zRYVDlR/hu7JHesXqwj+DsEBSlVAe7al1MlAE5aYslyuyYV7v47DCGLGKJZxfbaZnApsIHdYIBJA==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "picocolors": "^1.0.0",
+                "tinyglobby": "^0.2.12",
+                "vite-plugin-full-reload": "^1.1.0"
+            },
+            "bin": {
+                "clean-orphaned-assets": "bin/clean.js"
+            },
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            },
+            "peerDependencies": {
+                "fontaine": "^0.8.0 || ^1.0.0",
+                "vite": "^8.0.0"
+            },
+            "peerDependenciesMeta": {
+                "fontaine": {
+                    "optional": true
+                }
+            }
+        },
+        "node_modules/lightningcss": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss/-/lightningcss-1.33.0.tgz",
+            "integrity": "sha512-WkUDrojuJs0xkgGf2udWxa3yGBRxPtxUkB79i6aCZLRgc7PM8fZe9TosfPDcvEpQZbuFASnHYmRLBLUbmLOIIA==",
+            "dev": true,
+            "license": "MPL-2.0",
+            "dependencies": {
+                "detect-libc": "^2.0.3"
+            },
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            },
+            "optionalDependencies": {
+                "lightningcss-android-arm64": "1.33.0",
+                "lightningcss-darwin-arm64": "1.33.0",
+                "lightningcss-darwin-x64": "1.33.0",
+                "lightningcss-freebsd-x64": "1.33.0",
+                "lightningcss-linux-arm-gnueabihf": "1.33.0",
+                "lightningcss-linux-arm64-gnu": "1.33.0",
+                "lightningcss-linux-arm64-musl": "1.33.0",
+                "lightningcss-linux-x64-gnu": "1.33.0",
+                "lightningcss-linux-x64-musl": "1.33.0",
+                "lightningcss-win32-arm64-msvc": "1.33.0",
+                "lightningcss-win32-x64-msvc": "1.33.0"
+            }
+        },
+        "node_modules/lightningcss-android-arm64": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-android-arm64/-/lightningcss-android-arm64-1.33.0.tgz",
+            "integrity": "sha512-gEpRTalKdosp4Bb8qWtc2iOgE5SeIHlpS1up9bFq2wAyYhl1UdTObYiHe98zEM9SQvSoqQZ1IQD0JNpg3Ml5pg==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "android"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-darwin-arm64": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-darwin-arm64/-/lightningcss-darwin-arm64-1.33.0.tgz",
+            "integrity": "sha512-Sciaz8eenNTKn9b3t7+xr0ipTp9YxKQY4npwQ3mrRuL0BAVHBLyZxofhaKBAVtzmtRZ/zTyo0/to4B1uWG/Djg==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "darwin"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-darwin-x64": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-darwin-x64/-/lightningcss-darwin-x64-1.33.0.tgz",
+            "integrity": "sha512-Z5UPAxzrjlWNNyGy6i65cJzzvgJ5D3T6wMvs+gWpY9d7qRhANrxqAp6LhxIgZhWEw18RfJTGcRxjuLIBr+m8XQ==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "darwin"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-freebsd-x64": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-freebsd-x64/-/lightningcss-freebsd-x64-1.33.0.tgz",
+            "integrity": "sha512-QQM/Ti/hQajJwCY+RiWuCZ9sdtI/XQk7nDK5vC8kkdwixezOlDgvDx7+RT+QjK6FcFT4MpsuoBnHIo/O3StRRg==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "freebsd"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-linux-arm-gnueabihf": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-linux-arm-gnueabihf/-/lightningcss-linux-arm-gnueabihf-1.33.0.tgz",
+            "integrity": "sha512-N7FVBe6iS24MlM6R/4RBTxGhQheZGs7tiQ9U32UtF75NzP5Q7xWPRqLBCKxlRQRk3rY1jCIPLzx7WzOhuUIRLQ==",
+            "cpu": [
+                "arm"
+            ],
+            "dev": true,
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-linux-arm64-gnu": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-linux-arm64-gnu/-/lightningcss-linux-arm64-gnu-1.33.0.tgz",
+            "integrity": "sha512-j2v/itmy4HlNxlc6voKXYgBqNi0Ng2LShg4z7GufpEgs05P+2suBVyi9I6YHq5uoVFx9ETin3eCEhLVyXGQnKg==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "libc": [
+                "glibc"
+            ],
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-linux-arm64-musl": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-linux-arm64-musl/-/lightningcss-linux-arm64-musl-1.33.0.tgz",
+            "integrity": "sha512-yiO5ROMuYQgXbC60yjZU5CYSFZGKXL0HFATXt9mHJn1+zW55oCtMI9NfcVhYLMFDL7gV7oBPon/EmMMGg2OvtQ==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "libc": [
+                "musl"
+            ],
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-linux-x64-gnu": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-linux-x64-gnu/-/lightningcss-linux-x64-gnu-1.33.0.tgz",
+            "integrity": "sha512-ar+Ju7LmcN0Jo4FpL4hpFybwNG9/3A/Br5KW2n2jyODg3MEZXaDYADdemoNS+BDNfMgKvylJLj4S5tyRActuAg==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "libc": [
+                "glibc"
+            ],
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-linux-x64-musl": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-linux-x64-musl/-/lightningcss-linux-x64-musl-1.33.0.tgz",
+            "integrity": "sha512-RYiYbkokw0trfKqqzfF55lginwEPrD3OJDfTuJzFs1MK6iFnDenaz1fqLLtX4ITG3OktJQXOeTaw1awrBAlZPw==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "libc": [
+                "musl"
+            ],
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "linux"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-win32-arm64-msvc": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-win32-arm64-msvc/-/lightningcss-win32-arm64-msvc-1.33.0.tgz",
+            "integrity": "sha512-1K+MPfLSFVpphzpdbfkhlWk6wBrTObBzS2T6db10PNOZgR9GoVsAWzwNyuhUYYbTp23j+4RrncfujZ4uAzXvwA==",
+            "cpu": [
+                "arm64"
+            ],
+            "dev": true,
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "win32"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/lightningcss-win32-x64-msvc": {
+            "version": "1.33.0",
+            "resolved": "https://registry.npmjs.org/lightningcss-win32-x64-msvc/-/lightningcss-win32-x64-msvc-1.33.0.tgz",
+            "integrity": "sha512-OlEICDx/Xl0FqSp4bry8zFnCvGpig3Gl4gCquvYwHuqJKEC1+n9NgDniFvqHGmMv1ZkqDJrDqKKSykTDX+ehuA==",
+            "cpu": [
+                "x64"
+            ],
+            "dev": true,
+            "license": "MPL-2.0",
+            "optional": true,
+            "os": [
+                "win32"
+            ],
+            "engines": {
+                "node": ">= 12.0.0"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/parcel"
+            }
+        },
+        "node_modules/magic-string": {
+            "version": "1.4.5",
+            "resolved": "https://registry.npmjs.org/magic-string/-/magic-string-1.4.5.tgz",
+            "integrity": "sha512-oLLC2+YvQUfAa+vxoufE/yc1icb87M9iXIRqAoR/2EhE/8cb3SF/+Gi0c2By1B+5Vz2e2vQtUvHiu1+63Znh+w==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "@jridgewell/sourcemap-codec": "^1.6.0"
+            }
+        },
+        "node_modules/mimic-fn": {
+            "version": "2.1.0",
+            "resolved": "https://registry.npmjs.org/mimic-fn/-/mimic-fn-2.1.0.tgz",
+            "integrity": "sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=6"
+            }
+        },
+        "node_modules/nanoid": {
+            "version": "3.3.20",
+            "resolved": "https://registry.npmjs.org/nanoid/-/nanoid-3.3.20.tgz",
+            "integrity": "sha512-uKdg2G3GNCKQn9byYOpxbGqrT2fGO5KRt5J/8b3pok8rT6qxGWF6hxMyJiEYtAf+FVyYuD9hRaDqX5uPFYJ4ZQ==",
+            "dev": true,
+            "funding": [
+                {
+                    "type": "github",
+                    "url": "https://github.com/sponsors/ai"
+                }
+            ],
+            "license": "MIT",
+            "bin": {
+                "nanoid": "bin/nanoid.cjs"
+            },
+            "engines": {
+                "node": "^10 || ^12 || ^13.7 || ^14 || >=15.0.1"
+            }
+        },
+        "node_modules/onetime": {
+            "version": "5.1.2",
+            "resolved": "https://registry.npmjs.org/onetime/-/onetime-5.1.2.tgz",
+            "integrity": "sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "mimic-fn": "^2.1.0"
+            },
+            "engines": {
+                "node": ">=6"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/patch-console": {
+            "version": "2.0.0",
+            "resolved": "https://registry.npmjs.org/patch-console/-/patch-console-2.0.0.tgz",
+            "integrity": "sha512-0YNdUceMdaQwoKce1gatDScmMo5pu/tfABfnzEqeG0gtTmd7mh/WcwgUjtAeOU7N8nFFlbQBnFK2gXW5fGvmMA==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+            }
+        },
+        "node_modules/picocolors": {
+            "version": "1.1.1",
+            "resolved": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+            "integrity": "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==",
+            "dev": true,
+            "license": "ISC"
+        },
+        "node_modules/picomatch": {
+            "version": "4.0.7",
+            "resolved": "https://registry.npmjs.org/picomatch/-/picomatch-4.0.7.tgz",
+            "integrity": "sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=12"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/jonschlinkert"
+            }
+        },
+        "node_modules/postcss": {
+            "version": "8.5.33",
+            "resolved": "https://registry.npmjs.org/postcss/-/postcss-8.5.33.tgz",
+            "integrity": "sha512-RVHEU9/Pp1Fnjr/MpAJsZoADukCKhfIi15OunEYiGktIkYLkPVvC1sioWolGDS7XByMTx9m/IGbro0Js13zhnQ==",
+            "dev": true,
+            "funding": [
+                {
+                    "type": "opencollective",
+                    "url": "https://opencollective.com/postcss/"
+                },
+                {
+                    "type": "tidelift",
+                    "url": "https://tidelift.com/funding/github/npm/postcss"
+                },
+                {
+                    "type": "github",
+                    "url": "https://github.com/sponsors/ai"
+                }
+            ],
+            "license": "MIT",
+            "dependencies": {
+                "nanoid": "^3.3.20",
+                "picocolors": "^1.1.1",
+                "source-map-js": "^1.2.2"
+            },
+            "engines": {
+                "node": "^10 || ^12 || >=14"
+            }
+        },
+        "node_modules/react": {
+            "version": "19.3.1",
+            "resolved": "https://registry.npmjs.org/react/-/react-19.3.1.tgz",
+            "integrity": "sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=0.10.0"
+            }
+        },
+        "node_modules/react-reconciler": {
+            "version": "0.33.0",
+            "resolved": "https://registry.npmjs.org/react-reconciler/-/react-reconciler-0.33.0.tgz",
+            "integrity": "sha512-KetWRytFv1epdpJc3J4G75I4WrplZE5jOL7Yq0p34+OVOKF4Se7WrdIdVC45XsSSmUTlht2FM/fM1FZb1mfQeA==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "scheduler": "^0.27.0"
+            },
+            "engines": {
+                "node": ">=0.10.0"
+            },
+            "peerDependencies": {
+                "react": "^19.2.0"
+            }
+        },
+        "node_modules/restore-cursor": {
+            "version": "4.0.0",
+            "resolved": "https://registry.npmjs.org/restore-cursor/-/restore-cursor-4.0.0.tgz",
+            "integrity": "sha512-I9fPXU9geO9bHOt9pHHOhOkYerIMsmVaWB0rA2AI9ERh/+x/i7MV5HKBNrg+ljO5eoPVgCcnFuRjJ9uH6I/3eg==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "onetime": "^5.1.0",
+                "signal-exit": "^3.0.2"
+            },
+            "engines": {
+                "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/rolldown": {
+            "version": "1.2.19",
+            "resolved": "https://registry.npmjs.org/rolldown/-/rolldown-1.2.19.tgz",
+            "integrity": "sha512-QIiV1J9d0pzN4jeeTH4sjPy0AZ6cAy2cG0ExeoE1+U8Rvj+hR3gYkokx0YbeUNGlZqiQJJ2utcETe0oKXwzsuA==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "@oxc-project/types": "=0.156.0",
+                "@rolldown/pluginutils": "^1.0.0"
+            },
+            "bin": {
+                "rolldown": "bin/cli.mjs"
+            },
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            },
+            "optionalDependencies": {
+                "@rolldown/binding-android-arm-eabi": "1.2.19",
+                "@rolldown/binding-android-arm64": "1.2.19",
+                "@rolldown/binding-darwin-arm64": "1.2.19",
+                "@rolldown/binding-darwin-x64": "1.2.19",
+                "@rolldown/binding-freebsd-x64": "1.2.19",
+                "@rolldown/binding-linux-arm-gnueabihf": "1.2.19",
+                "@rolldown/binding-linux-arm64-gnu": "1.2.19",
+                "@rolldown/binding-linux-arm64-musl": "1.2.19",
+                "@rolldown/binding-linux-ppc64-gnu": "1.2.19",
+                "@rolldown/binding-linux-s390x-gnu": "1.2.19",
+                "@rolldown/binding-linux-x64-gnu": "1.2.19",
+                "@rolldown/binding-linux-x64-musl": "1.2.19",
+                "@rolldown/binding-openharmony-arm64": "1.2.19",
+                "@rolldown/binding-wasm32-wasi": "1.2.19",
+                "@rolldown/binding-win32-arm64-msvc": "1.2.19",
+                "@rolldown/binding-win32-x64-msvc": "1.2.19"
+            }
+        },
+        "node_modules/rxjs": {
+            "version": "7.8.2",
+            "resolved": "https://registry.npmjs.org/rxjs/-/rxjs-7.8.2.tgz",
+            "integrity": "sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==",
+            "dev": true,
+            "license": "Apache-2.0",
+            "dependencies": {
+                "tslib": "^2.1.0"
+            }
+        },
+        "node_modules/scheduler": {
+            "version": "0.27.0",
+            "resolved": "https://registry.npmjs.org/scheduler/-/scheduler-0.27.0.tgz",
+            "integrity": "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==",
+            "license": "MIT",
+            "optional": true
+        },
+        "node_modules/shell-quote": {
+            "version": "1.12.0",
+            "resolved": "https://registry.npmjs.org/shell-quote/-/shell-quote-1.12.0.tgz",
+            "integrity": "sha512-PcByqNyT/38F2kDNi006HAMRJaULuBzq/FOsw3qdZvX/GA9W/jamDaRskgHjubHiftXK5sIFxLNkvrXUwcof6Q==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">= 0.4"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/ljharb"
+            }
+        },
+        "node_modules/signal-exit": {
+            "version": "3.0.7",
+            "resolved": "https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.7.tgz",
+            "integrity": "sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==",
+            "license": "ISC",
+            "optional": true
+        },
+        "node_modules/slice-ansi": {
+            "version": "9.0.1",
+            "resolved": "https://registry.npmjs.org/slice-ansi/-/slice-ansi-9.0.1.tgz",
+            "integrity": "sha512-aBY19bn/XA+hKOKX0qL7Z0UfdBsbQvc9hn993U8ALUjzxCvDcuZqLoRXjGJrUARWAlwMnsRVD9sw2AFNOYvalA==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "ansi-styles": "^6.2.3",
+                "is-fullwidth-code-point": "^5.1.0"
+            },
+            "engines": {
+                "node": ">=22"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/slice-ansi?sponsor=1"
+            }
+        },
+        "node_modules/slice-ansi/node_modules/ansi-styles": {
+            "version": "6.2.3",
+            "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-6.2.3.tgz",
+            "integrity": "sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=12"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+            }
+        },
+        "node_modules/source-map-js": {
+            "version": "1.2.4",
+            "resolved": "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.4.tgz",
+            "integrity": "sha512-J7ZjMvHd9O1fcT/5V09QWaaSl2BbWx3F6O08spde82Namf9UB0GxRVIPiNbVsdKkoizHiSpTodo3vp2bAy91MA==",
+            "dev": true,
+            "license": "BSD-3-Clause",
+            "engines": {
+                "node": ">=6.0.0"
+            }
+        },
+        "node_modules/stack-utils": {
+            "version": "2.0.6",
+            "resolved": "https://registry.npmjs.org/stack-utils/-/stack-utils-2.0.6.tgz",
+            "integrity": "sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "escape-string-regexp": "^2.0.0"
+            },
+            "engines": {
+                "node": ">=10"
+            }
+        },
+        "node_modules/string-width": {
+            "version": "8.3.0",
+            "resolved": "https://registry.npmjs.org/string-width/-/string-width-8.3.0.tgz",
+            "integrity": "sha512-ZbmZM0JCihQN91dWnxoipT2KOEyHqEyfRXUyjuRhW8b/xnqPDoq4gWEVApTVa9db2wN8mmoikgFBbjh71+cGeQ==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "get-east-asian-width": "^1.5.0",
+                "strip-ansi": "^7.1.2"
+            },
+            "engines": {
+                "node": ">=20"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/strip-ansi": {
+            "version": "7.2.0",
+            "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-7.2.0.tgz",
+            "integrity": "sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==",
+            "devOptional": true,
+            "license": "MIT",
+            "dependencies": {
+                "ansi-regex": "^6.2.2"
+            },
+            "engines": {
+                "node": ">=12"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/strip-ansi?sponsor=1"
+            }
+        },
+        "node_modules/supports-color": {
+            "version": "10.2.2",
+            "resolved": "https://registry.npmjs.org/supports-color/-/supports-color-10.2.2.tgz",
+            "integrity": "sha512-SS+jx45GF1QjgEXQx4NJZV9ImqmO2NPz5FNsIHrsDjh2YsHnawpan7SNQ1o8NuhrbHZy9AZhIoCUiCeaW/C80g==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=18"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/supports-color?sponsor=1"
+            }
+        },
+        "node_modules/tagged-tag": {
+            "version": "1.0.0",
+            "resolved": "https://registry.npmjs.org/tagged-tag/-/tagged-tag-1.0.0.tgz",
+            "integrity": "sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=20"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/tailwindcss": {
+            "version": "4.3.5",
+            "resolved": "https://registry.npmjs.org/tailwindcss/-/tailwindcss-4.3.5.tgz",
+            "integrity": "sha512-FcQk9BuffmEHJP2G0XmB2SplU1aLTI7j07Kunk+U74Ny+XiWOtzXz9aujFZ/avntw1e2cOv/3PkgzflQ7gX2vQ==",
+            "dev": true,
+            "license": "MIT"
+        },
+        "node_modules/tapable": {
+            "version": "2.3.4",
+            "resolved": "https://registry.npmjs.org/tapable/-/tapable-2.3.4.tgz",
+            "integrity": "sha512-NHFiWnAbMJxNNpBwiO7jJVGDuqMxT9/oV8v57RR+fgBQShkJil5inGD8/xWy0hjLyHQyX1tu27QANhlz3KBqCg==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=6"
+            },
+            "funding": {
+                "type": "opencollective",
+                "url": "https://opencollective.com/webpack"
+            }
+        },
+        "node_modules/terminal-size": {
+            "version": "4.0.1",
+            "resolved": "https://registry.npmjs.org/terminal-size/-/terminal-size-4.0.1.tgz",
+            "integrity": "sha512-avMLDQpUI9I5XFrklECw1ZEUPJhqzcwSWsyyI8blhRLT+8N1jLJWLWWYQpB2q2xthq8xDvjZPISVh53T/+CLYQ==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=18"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/tinyglobby": {
+            "version": "0.2.17",
+            "resolved": "https://registry.npmjs.org/tinyglobby/-/tinyglobby-0.2.17.tgz",
+            "integrity": "sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "fdir": "^6.5.0",
+                "picomatch": "^4.0.4"
+            },
+            "engines": {
+                "node": ">=12.0.0"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/SuperchupuDev"
+            }
+        },
+        "node_modules/tree-kill": {
+            "version": "1.2.2",
+            "resolved": "https://registry.npmjs.org/tree-kill/-/tree-kill-1.2.2.tgz",
+            "integrity": "sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==",
+            "dev": true,
+            "license": "MIT",
+            "bin": {
+                "tree-kill": "cli.js"
+            }
+        },
+        "node_modules/tslib": {
+            "version": "2.9.1",
+            "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.9.1.tgz",
+            "integrity": "sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA==",
+            "dev": true,
+            "license": "0BSD"
+        },
+        "node_modules/type-fest": {
+            "version": "5.10.0",
+            "resolved": "https://registry.npmjs.org/type-fest/-/type-fest-5.10.0.tgz",
+            "integrity": "sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==",
+            "license": "(MIT OR CC0-1.0)",
+            "optional": true,
+            "dependencies": {
+                "tagged-tag": "^1.0.0"
+            },
+            "engines": {
+                "node": ">=20"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/vite": {
+            "version": "8.3.8",
+            "resolved": "https://registry.npmjs.org/vite/-/vite-8.3.8.tgz",
+            "integrity": "sha512-LzOn3h9rG/0vhLdXrV4yJ4QFA9eEoqCl+Yx+kGJd7aB9w6nfNgVHKSYwLPZUHrz4ZGa+t+kXjV9itvcHDLQouA==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "lightningcss": "^1.33.0",
+                "picomatch": "^4.0.7",
+                "postcss": "^8.5.32",
+                "rolldown": "~1.2.18",
+                "tinyglobby": "^0.2.17"
+            },
+            "bin": {
+                "vite": "bin/vite.js"
+            },
+            "engines": {
+                "node": "^20.19.0 || >=22.12.0"
+            },
+            "funding": {
+                "url": "https://github.com/vitejs/vite?sponsor=1"
+            },
+            "optionalDependencies": {
+                "fsevents": "~2.3.3"
+            },
+            "peerDependencies": {
+                "@types/node": "^20.19.0 || >=22.12.0",
+                "@vitejs/devtools": "^0.7.1 || ^0.8.0",
+                "esbuild": "^0.27.0 || ^0.28.0",
+                "jiti": ">=1.21.0",
+                "less": "^4.0.0",
+                "sass": "^1.70.0",
+                "sass-embedded": "^1.70.0",
+                "stylus": ">=0.54.8",
+                "sugarss": "^5.0.0",
+                "terser": "^5.16.0",
+                "tsx": "^4.8.1",
+                "yaml": "^2.4.2"
+            },
+            "peerDependenciesMeta": {
+                "@types/node": {
+                    "optional": true
+                },
+                "@vitejs/devtools": {
+                    "optional": true
+                },
+                "esbuild": {
+                    "optional": true
+                },
+                "jiti": {
+                    "optional": true
+                },
+                "less": {
+                    "optional": true
+                },
+                "sass": {
+                    "optional": true
+                },
+                "sass-embedded": {
+                    "optional": true
+                },
+                "stylus": {
+                    "optional": true
+                },
+                "sugarss": {
+                    "optional": true
+                },
+                "terser": {
+                    "optional": true
+                },
+                "tsx": {
+                    "optional": true
+                },
+                "yaml": {
+                    "optional": true
+                }
+            }
+        },
+        "node_modules/vite-plugin-full-reload": {
+            "version": "1.2.0",
+            "resolved": "https://registry.npmjs.org/vite-plugin-full-reload/-/vite-plugin-full-reload-1.2.0.tgz",
+            "integrity": "sha512-kz18NW79x0IHbxRSHm0jttP4zoO9P9gXh+n6UTwlNKnviTTEpOlum6oS9SmecrTtSr+muHEn5TUuC75UovQzcA==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "picocolors": "^1.0.0",
+                "picomatch": "^2.3.1"
+            }
+        },
+        "node_modules/vite-plugin-full-reload/node_modules/picomatch": {
+            "version": "2.3.2",
+            "resolved": "https://registry.npmjs.org/picomatch/-/picomatch-2.3.2.tgz",
+            "integrity": "sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==",
+            "dev": true,
+            "license": "MIT",
+            "engines": {
+                "node": ">=8.6"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/jonschlinkert"
+            }
+        },
+        "node_modules/widest-line": {
+            "version": "6.0.0",
+            "resolved": "https://registry.npmjs.org/widest-line/-/widest-line-6.0.0.tgz",
+            "integrity": "sha512-U89AsyEeAsyoF0zVJBkG9zBgekjgjK7yk9sje3F4IQpXBJ10TF6ByLlIfjMhcmHMJgHZI4KHt4rdNfktzxIAMA==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "string-width": "^8.1.0"
+            },
+            "engines": {
+                "node": ">=20"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/wrap-ansi": {
+            "version": "10.0.2",
+            "resolved": "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-10.0.2.tgz",
+            "integrity": "sha512-6OLRNZqRntVGBm26ghZ5eZhCuWWyOkRCSn8XsOIuq5stpCE/tjLbdozd93naILZig0lmD8ANfRwnhn0DLeXGlg==",
+            "license": "MIT",
+            "optional": true,
+            "dependencies": {
+                "ansi-styles": "^6.2.3",
+                "string-width": "^8.2.0"
+            },
+            "engines": {
+                "node": ">=20"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/wrap-ansi?sponsor=1"
+            }
+        },
+        "node_modules/wrap-ansi/node_modules/ansi-styles": {
+            "version": "6.2.3",
+            "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-6.2.3.tgz",
+            "integrity": "sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=12"
+            },
+            "funding": {
+                "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+            }
+        },
+        "node_modules/ws": {
+            "version": "8.23.0",
+            "resolved": "https://registry.npmjs.org/ws/-/ws-8.23.0.tgz",
+            "integrity": "sha512-wCkmX8QMOrKjgO8HW2WyDbTSGeqkocxgDzS9iR79rEAexty6/2qzilx3Ag8Tqf9ykop3irLKle0MtVn5qjVnoQ==",
+            "license": "MIT",
+            "optional": true,
+            "engines": {
+                "node": ">=10.0.0"
+            },
+            "peerDependencies": {
+                "bufferutil": "^4.0.1",
+                "utf-8-validate": ">=5.0.2"
+            },
+            "peerDependenciesMeta": {
+                "bufferutil": {
+                    "optional": true
+                },
+                "utf-8-validate": {
+                    "optional": true
+                }
+            }
+        },
+        "node_modules/y18n": {
+            "version": "5.0.8",
+            "resolved": "https://registry.npmjs.org/y18n/-/y18n-5.0.8.tgz",
+            "integrity": "sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==",
+            "dev": true,
+            "license": "ISC",
+            "engines": {
+                "node": ">=10"
+            }
+        },
+        "node_modules/yargs": {
+            "version": "18.0.0",
+            "resolved": "https://registry.npmjs.org/yargs/-/yargs-18.0.0.tgz",
+            "integrity": "sha512-4UEqdc2RYGHZc7Doyqkrqiln3p9X2DZVxaGbwhn2pi7MrRagKaOcIKe8L3OxYcbhXLgLFUS3zAYuQjKBQgmuNg==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "cliui": "^9.0.1",
+                "escalade": "^3.1.1",
+                "get-caller-file": "^2.0.5",
+                "string-width": "^7.2.0",
+                "y18n": "^5.0.5",
+                "yargs-parser": "^22.0.0"
+            },
+            "engines": {
+                "node": "^20.19.0 || ^22.12.0 || >=23"
+            }
+        },
+        "node_modules/yargs-parser": {
+            "version": "22.0.0",
+            "resolved": "https://registry.npmjs.org/yargs-parser/-/yargs-parser-22.0.0.tgz",
+            "integrity": "sha512-rwu/ClNdSMpkSrUb+d6BRsSkLUq1fmfsY6TOpYzTwvwkg1/NRG85KBy3kq++A8LKQwX6lsu+aWad+2khvuXrqw==",
+            "dev": true,
+            "license": "ISC",
+            "engines": {
+                "node": "^20.19.0 || ^22.12.0 || >=23"
+            }
+        },
+        "node_modules/yargs/node_modules/string-width": {
+            "version": "7.2.0",
+            "resolved": "https://registry.npmjs.org/string-width/-/string-width-7.2.0.tgz",
+            "integrity": "sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==",
+            "dev": true,
+            "license": "MIT",
+            "dependencies": {
+                "emoji-regex": "^10.3.0",
+                "get-east-asian-width": "^1.0.0",
+                "strip-ansi": "^7.1.0"
+            },
+            "engines": {
+                "node": ">=18"
+            },
+            "funding": {
+                "url": "https://github.com/sponsors/sindresorhus"
+            }
+        },
+        "node_modules/yoga-layout": {
+            "version": "3.2.1",
+            "resolved": "https://registry.npmjs.org/yoga-layout/-/yoga-layout-3.2.1.tgz",
+            "integrity": "sha512-0LPOt3AxKqMdFBZA3HBAt/t/8vIKq7VaQYbuA8WxCgung+p9TVyKRYdpvCb80HcdTN2NkbIKbhNwKUfm3tQywQ==",
+            "license": "MIT",
+            "optional": true
+        }
+    }
+}
+
+
+
+
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\package.json
+==================================================
 {
     "$schema": "https://www.schemastore.org/package.json",
     "private": true,
@@ -4616,9 +7422,9 @@ FILE: D:\laragon\www\dishub-surakarta\package.json
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\README.md
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\README.md
+==================================================
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -4681,9 +7487,9 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 
 
-==========================
-FILE: D:\laragon\www\dishub-surakarta\vite.config.js
-==========================
+==================================================
+FILE: E:\Semester 5\Project\Dishub\dishub\vite.config.js
+==================================================
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';

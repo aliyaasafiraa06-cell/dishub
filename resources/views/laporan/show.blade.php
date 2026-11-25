@@ -44,12 +44,10 @@
                                 <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Status</small>
                                 <div class="mt-1">
                                     @php
-                                        $badgeClass = match($laporan->status) {
-                                            'Disetujui' => 'bg-success text-white',
-                                            'Ditolak' => 'bg-danger text-white',
-                                            'Diproses' => 'bg-info text-white',
-                                            default => 'bg-warning text-dark',
-                                        };
+                                        $badgeClass = [
+                                            'Ritel' => 'bg-primary text-white',
+                                            'Sewa' => 'bg-success text-white',
+                                        ];
                                     @endphp
                                     <span class="badge {{ $badgeClass }} px-3 py-2" style="font-size: 14px; border-radius: 20px;">
                                         {{ $laporan->status }}

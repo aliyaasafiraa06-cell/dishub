@@ -41,6 +41,7 @@ class LaporanService
     public function getStatusCounts(int $layananId, ?int $year = null): array
     {
         $query = LaporanPemesanan::where('layanan_id', $layananId);
+
         if ($year) {
             $query->whereYear('tanggal_pemesanan', $year);
         }
@@ -52,10 +53,8 @@ class LaporanService
 
         return [
             'total' => array_sum($counts),
-            'Menunggu' => $counts['Menunggu'] ?? 0,
-            'Diproses' => $counts['Diproses'] ?? 0,
-            'Disetujui' => $counts['Disetujui'] ?? 0,
-            'Ditolak' => $counts['Ditolak'] ?? 0,
+            'Ritel' => $counts['Ritel'] ?? 0,
+            'Sewa' => $counts['Sewa'] ?? 0,
         ];
     }
 
@@ -71,3 +70,4 @@ class LaporanService
         return $years ?: [now()->year];
     }
 }
+

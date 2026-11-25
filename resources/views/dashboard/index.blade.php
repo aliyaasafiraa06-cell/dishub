@@ -121,7 +121,16 @@
                                     <td>{{ $report->layanan->nama_layanan }}</td>
                                     <td>{{ $report->tanggal_pemesanan->format('d M Y') }}</td>
                                     <td>
-                                        <span class="badge bg-{{ $report->status === 'Disetujui' ? 'success' : ($report->status === 'Ditolak' ? 'danger' : 'warning') }} bg-opacity-10 text-{{ $report->status === 'Disetujui' ? 'success' : ($report->status === 'Ditolak' ? 'danger' : 'warning') }}">
+                                        @php
+                                            $statusColors = [
+                                                'Ritel' => 'primary',
+                                                'Sewa' => 'success',
+                                            ];
+
+                                            $badgeColor = $statusColors[$report->status] ?? 'secondary';
+                                        @endphp
+
+                                        <span class="badge bg-{{ $badgeColor }} bg-opacity-10 text-{{ $badgeColor }} px-3 py-2">
                                             {{ $report->status }}
                                         </span>
                                     </td>
