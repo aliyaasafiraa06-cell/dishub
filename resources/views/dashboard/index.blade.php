@@ -148,16 +148,39 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
     const ctx = document.getElementById('monthlyChart').getContext('2d');
+
     new Chart(ctx, {
-        type: 'bar',
+        type: 'line',                       // <-- diubah dari 'bar' ke 'line'
         data: {
             labels: @json($chartData['labels']),
             datasets: [{
                 label: 'Jumlah Laporan',
                 data: @json($chartData['values']),
-                backgroundColor: '#2878E8',
-                borderRadius: 8,
-                borderSkipped: false,
+
+                borderWidth: 3,
+                tension: 0.35,              // garis melengkung halus
+                fill: true,
+                backgroundColor: 'rgba(40, 120, 232, 0.08)', // isian tipis
+                borderColor: '#2878E8',     // warna dasar (fallback)
+
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBorderWidth: 2,
+                pointBorderColor: '#fff',
+
+                // Titik: biru kalau naik/sama, merah kalau turun
+                pointBackgroundColor: (c) => {
+                    const i = c.dataIndex;
+                    const v = c.dataset.data;
+                    if (i === 0) return '#2878E8';
+                    return v[i] >= v[i - 1] ? '#2878E8' : '#DC3545';
+                },
+
+                // Segmen garis: warna mengikuti arah perubahan
+                segment: {
+                    borderColor: (c) =>
+                        c.p1.parsed.y >= c.p0.parsed.y ? '#2878E8' : '#DC3545',
+                },
             }]
         },
         options: {

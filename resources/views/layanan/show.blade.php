@@ -406,6 +406,15 @@
                 pointBackgroundColor: '#2878E8',
 
                 pointRadius: 4,
+
+                segment: {
+                    borderColor: (c) => c.p1.parsed.y >= c.p0.parsed.y ? '#2878E8' : '#DC3545',
+                },
+                pointBackgroundColor: (c) => {
+                    const i = c.dataIndex, v = c.dataset.data;
+                    if (i === 0) return '#2878E8';
+                    return v[i] >= v[i - 1] ? '#2878E8' : '#DC3545';
+                },
             }]
         },
 
