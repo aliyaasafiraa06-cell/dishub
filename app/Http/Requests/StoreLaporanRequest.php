@@ -41,6 +41,7 @@ class StoreLaporanRequest extends FormRequest
             'jam_berangkat' => ['nullable', 'date_format:H:i'],
             'rute' => ['nullable', 'string', 'max:500'],
             'titik_pemberhentian' => ['nullable', 'string', 'max:500'],
+            'nama_supir' => ['nullable', 'string', 'max:255'],
             'jumlah_pemesanan' => ['required', 'integer', 'min:1'],
             'keperluan' => ['required', 'string'],
             'status' => ['required', Rule::in(LaporanPemesanan::STATUS_OPTIONS)],

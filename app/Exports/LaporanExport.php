@@ -16,6 +16,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class LaporanExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithTitle
 {
+
     private int $no = 0;
 
     public function __construct(
@@ -29,6 +30,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping, Should
      */
     public function collection(): Collection
     {
+
         return app(LaporanService::class)
             ->queryForLayanan($this->layanan->id, $this->filters)
             ->get();
@@ -52,6 +54,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping, Should
             'Jam Berangkat',
             'Rute',
             'Titik Pemberhentian',
+            'Nama Supir',          // <-- kolom baru
             'Jumlah Pemesanan',
             'Keperluan',
             'Status',
@@ -72,6 +75,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping, Should
             $laporan->jam_berangkat ? Carbon::parse($laporan->jam_berangkat)->format('H:i') : '-',
             $laporan->rute ?? '-',
             $laporan->titik_pemberhentian ?? '-',
+            $laporan->nama_supir ?? '-',   // <-- harus sejajar dengan heading di atas
             $laporan->jumlah_pemesanan,
             $laporan->keperluan,
             $laporan->status,

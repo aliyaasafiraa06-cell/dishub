@@ -49,7 +49,8 @@
                                             'Sewa' => 'bg-success text-white',
                                         ];
                                     @endphp
-                                    <span class="badge {{ $badgeClass }} px-3 py-2" style="font-size: 14px; border-radius: 20px;">
+                                    {{-- FIX: ambil class berdasarkan status, bukan echo array --}}
+                                    <span class="badge {{ $badgeClass[$laporan->status] ?? 'bg-secondary text-white' }} px-3 py-2" style="font-size: 14px; border-radius: 20px;">
                                         {{ $laporan->status }}
                                     </span>
                                 </div>
@@ -112,6 +113,14 @@
                             <div class="p-3 bg-light rounded-3">
                                 <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Titik Pemberhentian</small>
                                 <div class="fw-bold">{{ $laporan->titik_pemberhentian ?? '-' }}</div>
+                            </div>
+                        </div>
+
+                        {{-- BARU: Nama Supir --}}
+                        <div class="col-12">
+                            <div class="p-3 bg-light rounded-3">
+                                <small class="text-muted fw-semibold text-uppercase" style="font-size: 11px;">Nama Supir</small>
+                                <div class="fw-bold">{{ $laporan->nama_supir ?? '-' }}</div>
                             </div>
                         </div>
 

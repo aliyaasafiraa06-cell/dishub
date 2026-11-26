@@ -250,6 +250,7 @@
                                 <th>Tgl Pesan</th>
                                 <th>Jam Berangkat</th>
                                 <th>Rute</th>
+                                <th>Supir</th>
                                 <th>Jml</th>
                                 <th>Status</th>
 
@@ -290,6 +291,7 @@
                                             {{ $item->rute ?? '-' }}
                                         </small>
                                     </td>
+                                    <td>{{ $item->nama_supir ?? '-' }}</td>
 
                                     <td>{{ $item->jumlah_pemesanan }}</td>
 

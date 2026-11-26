@@ -95,6 +95,15 @@
                                 <input type="text" name="titik_pemberhentian" class="form-control @error('titik_pemberhentian') is-invalid @enderror" value="{{ old('titik_pemberhentian') }}" placeholder="Contoh: Halte Mangkunegaran">
                                 @error('titik_pemberhentian') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Nama Supir</label>
+                                <input type="text" name="nama_supir"
+                                    class="form-control @error('nama_supir') is-invalid @enderror"
+                                    value="{{ old('nama_supir') }}"
+                                    placeholder="Contoh: Budi Santoso">
+                                @error('nama_supir') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <small class="text-muted">Boleh dikosongkan jika supir belum ditentukan.</small>
+                            </div>
                         </div>
 
                         {{-- Detail Pemesanan --}}

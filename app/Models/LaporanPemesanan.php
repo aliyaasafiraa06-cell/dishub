@@ -18,9 +18,10 @@ class LaporanPemesanan extends Model
         'no_telepon',
         'tanggal_pemesanan',
         'tanggal_pelaksanaan',
-        'jam_berangkat',        // <-- HARUS ADA
-        'rute',                 // <-- HARUS ADA
-        'titik_pemberhentian',  // <-- HARUS ADA
+        'jam_berangkat',
+        'rute',
+        'titik_pemberhentian',
+        'nama_supir',          // <-- baru
         'jumlah_pemesanan',
         'keperluan',
         'status',

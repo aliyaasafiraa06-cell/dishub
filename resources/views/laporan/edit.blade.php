@@ -89,6 +89,14 @@
                                 <input type="text" name="titik_pemberhentian" class="form-control @error('titik_pemberhentian') is-invalid @enderror" value="{{ old('titik_pemberhentian', $laporan->titik_pemberhentian) }}">
                                 @error('titik_pemberhentian') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold small">Nama Supir</label>
+                                <input type="text" name="nama_supir"
+                                    class="form-control @error('nama_supir') is-invalid @enderror"
+                                    value="{{ old('nama_supir', $laporan->nama_supir) }}"
+                                    placeholder="Contoh: Budi Santoso">
+                                @error('nama_supir') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
                         </div>
 
                         <h6 class="fw-bold text-primary mb-3"><i class="bi bi-card-checklist"></i> Detail Pemesanan</h6>
